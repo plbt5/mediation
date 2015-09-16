@@ -54,10 +54,20 @@ public class demo {
 				if (align.exists() && !align.isDirectory()) {
 					// Simulate a SAP init call from the alignment
 					SAP sap = new SAP();
-					sap.addEDOALALignment("file:" + alignFile);
+					try {
+						sap.addEDOALALignment("file:" + alignFile);
+					} catch (UnsupportedOperationException e) {
+						log.log(Level.SEVERE, "SAP: Cannot add EDOAL alignment: " + alignFile);
+					}
+					sap.showMediation();
 					
 					// Simulate a SAP call to send message
 					// TODO call SAP.send
+					
+					File dataA = new File(dataAFile);
+					if (dataA.exists() && !dataA.isDirectory()) {
+						
+					}
 					
 					// Simulate the SAP call from the other app to receive its data
 					// TODO call SAP.receive

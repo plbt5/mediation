@@ -1,5 +1,5 @@
 /**
- * MediatorGenerator.java 
+ * MediatorFactory.java 
  *
  * Copyright (C) University of Eindhoven, Eindhoven, The Entherlands, 2015
  *
@@ -55,23 +55,23 @@ import uk.soton.service.mediation.algebra.ExtendedOpAsQuery;
 import uk.soton.service.mediation.edoal.EDOALMediator;
 
 /**
- * The Class MediatorGenerator generates the alignment-specific details that conform to the selected 
+ * The Class MediatorFactory generates the alignment-specific details that conform to the selected 
  * EDOAL alignment. The generated details are applied by a new instance of the Mediator. 
  * data that belongs to, and can be retrieved from one application ontology, into data that belongs to 
  * another application ontology. In that process it preserves the semantics as has been specified by 
  * the Alignment that it has been generated from (see the MeditiationGenerator class).<br/>
  *
- * The MediatorGenerator Class provides the following features:<br/>
+ * The MediatorFactory Class provides the following features:<br/>
  * // TODO wat zijn die features dan?
  * 
  * @author Paul Brandt <paul@brandt.name>
  *
  */
-public class MediatorGenerator {
+public class MediatorFactory {
 
-	private static final Logger log = Logger.getLogger( MediatorGenerator.class.getName() );
+	private static final Logger log = Logger.getLogger( MediatorFactory.class.getName() );
 	/**
-	 * A MediatorGenerator is the result of an alignment. This is the EDOAL alignment that it originates from.
+	 * A MediatorFactory is the result of an alignment. This is the EDOAL alignment that it originates from.
 	 */	
 	private EDOAL edoal = null;
 
@@ -96,11 +96,11 @@ public class MediatorGenerator {
 	private org.semanticweb.owl.align.Alignment al = null;
 	
 	/**
-	 * The MediatorGenerator class constructor parses and stores the EDOAL alignment to apply.
+	 * The MediatorFactory class constructor parses and stores the EDOAL alignment to apply.
 	 * @param object of type: String, URI, Reader or InputStream; containing the EDOAL alignment
 	 * @throws AlignmentException the alignment exception
 	 */
-	public MediatorGenerator(Object o) throws UnsupportedOperationException {
+	public MediatorFactory(Object o) throws UnsupportedOperationException {
 		try {
 			// Read and parse the EDOAL alignment. Several serialisations for alignments exists
 			// hence we need to consider them all and cast to the correct type.
@@ -108,7 +108,7 @@ public class MediatorGenerator {
 			if ( o instanceof String) this.edoal = new EDOAL((String) o); 
 			else {
 				log.log(Level.WARNING,	"Class not handled yet:" + o.getClass());
-				throw new UnsupportedOperationException("MediatorGenerator: Cannot yet handle EDOAL serialisations of type " + o.getClass());
+				throw new UnsupportedOperationException("MediatorFactory: Cannot yet handle EDOAL serialisations of type " + o.getClass());
 			}
 			
 			//if ( o instanceof String) this.edoal.align = this.edoal.parser.parseString((String) o); 

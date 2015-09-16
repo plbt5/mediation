@@ -26,7 +26,7 @@ import com.hp.hpl.jena.shared.DoesNotExistException;
 public class MediatorTest {
 
 	/**
-	 * Test method for {@link nl.tue.siop.layer.MediatorGenerator#Mediator(java.lang.Object)}.
+	 * Test method for {@link nl.tue.siop.layer.MediatorFactory#Mediator(java.lang.Object)}.
 	 * @throws AlignmentException 
 	 */
 	
@@ -37,25 +37,25 @@ public class MediatorTest {
 	public void testMediatorException() {
 		String sourceFile = "file:fileDoesNotExist.xml";
 		e.expect(UnsupportedOperationException.class);
-		e.expectMessage(org.hamcrest.CoreMatchers.containsString("MediatorGenerator"));
+		e.expectMessage(org.hamcrest.CoreMatchers.containsString("MediatorFactory"));
 		
-		new MediatorGenerator(sourceFile);
+		new MediatorFactory(sourceFile);
 	}
 	
 	/**
-	 * Test method for {@link nl.tue.siop.layer.MediatorGenerator#Mediator(java.lang.Object)}.
+	 * Test method for {@link nl.tue.siop.layer.MediatorFactory#Mediator(java.lang.Object)}.
 	 * @throws AlignmentException 
 	 */
 	@Test
 	public void testMediator() {
 		String sourceFile = "file:resources/nl/myAlign.xml";
-		MediatorGenerator m = null;
+		MediatorFactory m = null;
 		
 		try {
-			m = new MediatorGenerator(sourceFile);
-			// m2 = new MediatorGenerator("uri:resources/nl/myAlign.xml");
-			// m3 = new MediatorGenerator( );
-			// m4 = new MediatorGenerator( );
+			m = new MediatorFactory(sourceFile);
+			// m2 = new MediatorFactory("uri:resources/nl/myAlign.xml");
+			// m3 = new MediatorFactory( );
+			// m4 = new MediatorFactory( );
 		} catch (UnsupportedOperationException e) {
 			fail("Parsing as String serialisation failed for: " + sourceFile);
 			e.printStackTrace();
@@ -68,15 +68,15 @@ public class MediatorTest {
 
 	
 	/**
-	 * Test method for {@link nl.tue.siop.layer.MediatorGenerator#generateMediation()}.
+	 * Test method for {@link nl.tue.siop.layer.MediatorFactory#generateMediation()}.
 	 */
 	@Test
 	public void testGenerateMediation() {
 		String sourceFile = "file:resources/nl/myAlign.xml";
-		MediatorGenerator m = null;
+		MediatorFactory m = null;
 		
 		try {
-			m = new MediatorGenerator(sourceFile);
+			m = new MediatorFactory(sourceFile);
 			m.generateMediation();
 		} catch (AlignmentException e) {
 			fail("Generating mediation from alignment");

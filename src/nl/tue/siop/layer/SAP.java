@@ -49,7 +49,7 @@ public class SAP {
 		} else {
 			Alignment a = null;
 			try {
-				MediatorGenerator mg = new MediatorGenerator(file);
+				MediatorFactory mg = new MediatorFactory(file);
 				a = mg.generateMediation();
 				this.m = new Mediator(a);
 			} catch (AlignmentException e) {
@@ -58,7 +58,14 @@ public class SAP {
 		}
 	}
 	
-	
+	/**
+	 * Send a statement, expressed in one's own native language, to the other application.
+	 * This implies the application of a mediation, e.g., transformation, into its 
+	 * equivalent statement however now expressed in the native language of the other application.
+	 * @param String s The statement
+	 * @return True if delivered, False otherwise.
+	 * TODO Abstract into Statement<type> or something
+	 */
 	public boolean send(String s) {
 		Query tq = null;
 		Query sq = QueryFactory.create(s, Syntax.syntaxARQ);
@@ -66,9 +73,27 @@ public class SAP {
 		return this.p.send(tq.toString());
 	}
 	
+	/** 
+	 * Check whether a statement was received from the other application.
+	 * Since the other application acts a slave, it sends statement expressed in its
+	 * own language. Receiving data therefore implies an inverse mediation, e.g., transformation, into
+	 * its equivalent statement expressed in our language.
+	 * @return Query A statement in our language.
+	 */
 	public Query receive() {
 		Query sq = QueryFactory.create(p.receive(), Syntax.syntaxARQ);
 		return sq;
 	}
 	
+	/**
+	 * Show the mediation rules that are currently applied. 
+	 * Use both the console and the logger as output target.
+	 */
+	
+	public void showMediation() {
+		String medString = this.m.toString();
+		log.log(Level.INFO, "Current mediation: \n" + medString);
+		System.out.println("Current mediation: \n" + medString);
+		return;
+	}
 }

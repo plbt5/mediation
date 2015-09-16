@@ -14,7 +14,7 @@ import org.junit.rules.ExpectedException;
  * @author brandtp
  *
  */
-public class AddAnotherAlignmentToMediator {
+public class SAPTest {
 	SAP sap;
 	/**
 	 * @throws java.lang.Exception
