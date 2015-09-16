@@ -4,8 +4,10 @@
 package nl.tue.siop.layer;
 
 import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
+//import static org.junit.matchers.JUnitMatchers.*;
 
+//import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -34,17 +36,10 @@ public class MediatorTest {
 	@Test
 	public void testMediatorException() {
 		String sourceFile = "file:fileDoesNotExist.xml";
-		try {
-			e.expect(AlignmentException.class);
-			new MediatorGenerator(sourceFile);
-			fail("Should have thrown an DoesNotExistException or AlignmentException!");
-		} catch (AlignmentException e) {
-			assertThat(e.getMessage(), containsString(sourceFile));
-		} catch (DoesNotExistException e) {
-			assertThat(e.getMessage(), containsString(sourceFile));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		e.expect(UnsupportedOperationException.class);
+		e.expectMessage(org.hamcrest.CoreMatchers.containsString("MediatorGenerator"));
+		
+		new MediatorGenerator(sourceFile);
 	}
 	
 	/**
@@ -61,7 +56,7 @@ public class MediatorTest {
 			// m2 = new MediatorGenerator("uri:resources/nl/myAlign.xml");
 			// m3 = new MediatorGenerator( );
 			// m4 = new MediatorGenerator( );
-		} catch (AlignmentException e) {
+		} catch (UnsupportedOperationException e) {
 			fail("Parsing as String serialisation failed for: " + sourceFile);
 			e.printStackTrace();
 		}
