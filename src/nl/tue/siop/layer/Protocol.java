@@ -40,7 +40,7 @@ public class Protocol {
 	}
 	
 	public boolean send(String msg) {
-		System.out.println("Sending message:\n" + msg);
+		System.out.println("Sending message:\n" + msg + "\n");
 		return true;
 	}
 	

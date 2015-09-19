@@ -48,8 +48,10 @@ import com.hp.hpl.jena.sparql.expr.E_Subtract;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
- * The Class JenaAlignment implements the Alignment interface using Jena API.
- * At class loading time the resolver is populated with well known functions instances.
+ * The Class JenaAlignment implements the Alignment interface using Jena API. At
+ * class loading time the resolver is populated with well known functions
+ * instances.
+ * 
  * @author Gianluca Correndo <gc3@ecs.soton.ac.uk>
  */
 public class JenaAlignment implements Alignment {
@@ -75,6 +77,7 @@ public class JenaAlignment implements Alignment {
 	private static Node getNewVar() {
 		return Node.createVariable("_" + getNewSymb());
 	}
+
 	/** The Jena Model containing the alignments. */
 	private Model inner;
 	/** The Triple patterns contained in the alignment. */
@@ -89,8 +92,8 @@ public class JenaAlignment implements Alignment {
 	{
 		resolver = new Hashtable<Node, Function>();
 		resolver.put(Node.createURI(RDFVocabulary.SAMEAS), FunctionWrapper.$(new SameAs()));
-		resolver.put(Node.createURI(RDFVocabulary.FN_SUB), FunctionWrapper.$(new E_Subtract(null,null)));
-		resolver.put(Node.createURI(RDFVocabulary.FN_SUM), FunctionWrapper.$(new E_Add(null,null)));
+		resolver.put(Node.createURI(RDFVocabulary.FN_SUB), FunctionWrapper.$(new E_Subtract(null, null)));
+		resolver.put(Node.createURI(RDFVocabulary.FN_SUM), FunctionWrapper.$(new E_Add(null, null)));
 
 	}
 
@@ -100,8 +103,7 @@ public class JenaAlignment implements Alignment {
 	public JenaAlignment() {
 		this.inner = ModelFactory.createDefaultModel();
 		this.root = this.getA();
-		this.inner.add(this.root, this.getP(RDFVocabulary.RDF_TYPE),
-				this.getR(RDFVocabulary.ALIGNMENT));
+		this.inner.add(this.root, this.getP(RDFVocabulary.RDF_TYPE), this.getR(RDFVocabulary.ALIGNMENT));
 	}
 
 	/**
@@ -125,8 +127,10 @@ public class JenaAlignment implements Alignment {
 	}
 
 	/**
-	 * Utility function that returns the RDF Node for the input property URI 
-	 * @param uri String URI
+	 * Utility function that returns the RDF Node for the input property URI
+	 * 
+	 * @param uri
+	 *            String URI
 	 * @return a Jena Property from the inner Model
 	 */
 	private Property getP(String uri) {
@@ -134,8 +138,10 @@ public class JenaAlignment implements Alignment {
 	}
 
 	/**
-	 * Utility function that returns the RDF Node for the input Resource URI 
-	 * @param uri String URI
+	 * Utility function that returns the RDF Node for the input Resource URI
+	 * 
+	 * @param uri
+	 *            String URI
 	 * @return a Jena Resource from the inner Model
 	 */
 	private Resource getR(String uri) {
@@ -143,29 +149,33 @@ public class JenaAlignment implements Alignment {
 	}
 
 	/**
-	 * Utility function that returns the RDF Anonymous Node for the input anonymous id 
-	 * @param id String id
+	 * Utility function that returns the RDF Anonymous Node for the input
+	 * anonymous id
+	 * 
+	 * @param id
+	 *            String id
 	 * @return a Jena Anonymous Node from the inner Model
 	 */
 	private Resource getA(String id) {
-		return (id == null
-				? this.inner.createResource(AnonId.create())
-				: this.inner.createResource(AnonId.create(id)));
+		return (id == null ? this.inner.createResource(AnonId.create()) : this.inner.createResource(AnonId.create(id)));
 	}
 
 	/**
-	 * Utility function that returns the RDF Anonymous Node for the input anonymous id 
-	 * @param id AnonId
+	 * Utility function that returns the RDF Anonymous Node for the input
+	 * anonymous id
+	 * 
+	 * @param id
+	 *            AnonId
 	 * @return a Jena Anonymous Node from the inner Model
 	 */
 	private Resource getA(AnonId id) {
-		return (id == null
-				? this.inner.createResource(AnonId.create())
-				: this.inner.createResource(id));
+		return (id == null ? this.inner.createResource(AnonId.create()) : this.inner.createResource(id));
 	}
 
 	/**
-	 * Utility function that returns an RDF Anonymous Node without a particular id 
+	 * Utility function that returns an RDF Anonymous Node without a particular
+	 * id
+	 * 
 	 * @return a Jena Anonymous Node from the inner Model
 	 */
 	private Resource getA() {
@@ -173,10 +183,13 @@ public class JenaAlignment implements Alignment {
 	}
 
 	/**
-	 * The Merge method create a new JenaAlignment composed of the union of the two input alignments.
+	 * The Merge method create a new JenaAlignment composed of the union of the
+	 * two input alignments.
 	 * 
-	 * @param a the first alignment
-	 * @param b the second alignment
+	 * @param a
+	 *            the first alignment
+	 * @param b
+	 *            the second alignment
 	 * @return the merged jena alignment
 	 */
 	public static JenaAlignment merge(JenaAlignment a, JenaAlignment b) {
@@ -187,35 +200,36 @@ public class JenaAlignment implements Alignment {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * uk.soton.service.mediation.Alignment#matchLHS(com.hp.hpl.jena.graph.Triple
-	 * )
+	 * @see uk.soton.service.mediation.Alignment#matchLHS(com.hp.hpl.jena.graph.
+	 * Triple )
 	 */
 	@Override
 	public MatchingResult matchLHS(Triple t) {
 		Hashtable<Node, Node> binding = null;
 		Hashtable<Triple, List<Triple>> p = this.getPatterns();
-		//log.log(Level.INFO, "Patterns keys: " + p.keySet());
+		// log.log(Level.INFO, "Patterns keys: " + p.keySet());
 		for (Triple pt : this.patterns.keySet()) {
 			binding = Utility.match(pt, t);
 			if (binding != null) {
-				return this.particularize(p.get(pt),
-						this.fdependencies.get(pt), binding);
+				return this.particularize(p.get(pt), this.fdependencies.get(pt), binding);
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * The Particularize method instantiate a list of triple patterns with the provided inputs.
+	 * The Particularize method instantiate a list of triple patterns with the
+	 * provided inputs.
 	 * 
-	 * @param pattern list of triples (with possible variables) to rename
-	 * @param fdependencies  functional dependencies between variables
-	 * @param binding  binding from the matching phase
+	 * @param pattern
+	 *            list of triples (with possible variables) to rename
+	 * @param fdependencies
+	 *            functional dependencies between variables
+	 * @param binding
+	 *            binding from the matching phase
 	 * @return a MatchingResult instance with all the variables renamed
 	 */
-	private MatchingResult particularize(List<Triple> pattern,
-			Hashtable<Node, FunctionalDependency> fdependencies,
+	private MatchingResult particularize(List<Triple> pattern, Hashtable<Node, FunctionalDependency> fdependencies,
 			Hashtable<Node, Node> binding) {
 		MatchingResult result = null;
 		Hashtable<Node, Node> newBinding = new Hashtable<Node, Node>();
@@ -280,8 +294,7 @@ public class JenaAlignment implements Alignment {
 				Node npar = (par.isVariable() ? translation.get(par) : par);
 				param.add(npar);
 			}
-			newFunctionalDep.put(nvar,
-					new FunctionalDependency(nvar, fd.getFunc(), param));
+			newFunctionalDep.put(nvar, new FunctionalDependency(nvar, fd.getFunc(), param));
 		}
 		result = new MatchingResult(newPattern, newBinding, newFunctionalDep);
 		return result;
@@ -329,9 +342,7 @@ public class JenaAlignment implements Alignment {
 	@Override
 	public void setSourceOntologyURIs(List<String> sourceOntologyURIs) {
 		for (String uri : sourceOntologyURIs) {
-			this.inner.add(this.root, this.inner
-					.createProperty(RDFVocabulary.HAS_SOURCE_ONTOLOGY), this
-					.getR(uri));
+			this.inner.add(this.root, this.inner.createProperty(RDFVocabulary.HAS_SOURCE_ONTOLOGY), this.getR(uri));
 		}
 	}
 
@@ -345,9 +356,7 @@ public class JenaAlignment implements Alignment {
 	@Override
 	public void setTargetOntologyURIs(List<String> targetOntologyURIs) {
 		for (String uri : targetOntologyURIs) {
-			this.inner.add(this.root, this.inner
-					.createProperty(RDFVocabulary.HAS_TARGET_ONTOLOGY), this
-					.getR(uri));
+			this.inner.add(this.root, this.inner.createProperty(RDFVocabulary.HAS_TARGET_ONTOLOGY), this.getR(uri));
 		}
 	}
 
@@ -361,35 +370,28 @@ public class JenaAlignment implements Alignment {
 		if (this.patterns != null) {
 			return this.patterns;
 		}
-		//log.log(Level.INFO, "Model: " + this.inner);
+		// log.log(Level.INFO, "Model: " + this.inner);
 		Hashtable<Triple, List<Triple>> result = new Hashtable<Triple, List<Triple>>();
 		fdependencies = new Hashtable<Triple, Hashtable<Node, FunctionalDependency>>();
-		ResIterator ei = inner.listSubjectsWithProperty(
-				getP(RDFVocabulary.RDF_TYPE),
+		ResIterator ei = inner.listSubjectsWithProperty(getP(RDFVocabulary.RDF_TYPE),
 				getR(RDFVocabulary.ENTITY_ALIGNMENT));
 		Triple tlhs = null, trhs = null;
 		for (Resource al : ei.toList()) {
-			StmtIterator lhst = inner.listStatements(al,
-					getP(RDFVocabulary.LHS), (RDFNode) null);
+			StmtIterator lhst = inner.listStatements(al, getP(RDFVocabulary.LHS), (RDFNode) null);
 			if (!lhst.hasNext()) {
-				Logger.getLogger(JenaAlignment.class.getName()).log(
-						Level.SEVERE, "No LHS provided");
+				Logger.getLogger(JenaAlignment.class.getName()).log(Level.SEVERE, "No LHS provided");
 			}
 			for (Statement lhs : lhst.toList()) {
-				tlhs = Utility.getReified((Resource) lhs.getObject(),
-						this.inner);
+				tlhs = Utility.getReified((Resource) lhs.getObject(), this.inner);
 				tlhs = Utility.substituteBlankWithVars(tlhs);
 			}
-			StmtIterator rhst = inner.listStatements(al,
-					getP(RDFVocabulary.RHS), (RDFNode) null);
+			StmtIterator rhst = inner.listStatements(al, getP(RDFVocabulary.RHS), (RDFNode) null);
 			if (!rhst.hasNext()) {
-				Logger.getLogger(JenaAlignment.class.getName()).log(
-						Level.SEVERE, "No RHS provided");
+				Logger.getLogger(JenaAlignment.class.getName()).log(Level.SEVERE, "No RHS provided");
 			}
 			ArrayList<Triple> rhsa = new ArrayList<Triple>();
 			for (Statement rt : rhst.toList()) {
-				trhs = Utility
-						.getReified((Resource) rt.getObject(), this.inner);
+				trhs = Utility.getReified((Resource) rt.getObject(), this.inner);
 				trhs = Utility.substituteBlankWithVars(trhs);
 				rhsa.add(trhs);
 			}
@@ -397,8 +399,7 @@ public class JenaAlignment implements Alignment {
 				result.put(tlhs, rhsa);
 			}
 
-			NodeIterator fdt = this.inner.listObjectsOfProperty(al,
-					getP(RDFVocabulary.HAS_FUNCTIONAL_DEPENDENCY));
+			NodeIterator fdt = this.inner.listObjectsOfProperty(al, getP(RDFVocabulary.HAS_FUNCTIONAL_DEPENDENCY));
 			Hashtable<Node, FunctionalDependency> fdep = new Hashtable<Node, FunctionalDependency>();
 			for (RDFNode fd : fdt.toList()) {
 				Triple tfd = Utility.getReified((Resource) fd, this.inner);
@@ -423,8 +424,7 @@ public class JenaAlignment implements Alignment {
 	public void addPattern(Triple lhs, List<Triple> rhs, Relation relation) {
 		Resource lhsa = this.getA();
 		Resource ea = this.getA();
-		this.inner.add(ea, this.getP(RDFVocabulary.RDF_TYPE),
-				this.getR(RDFVocabulary.ENTITY_ALIGNMENT)).add(ea,
+		this.inner.add(ea, this.getP(RDFVocabulary.RDF_TYPE), this.getR(RDFVocabulary.ENTITY_ALIGNMENT)).add(ea,
 				this.getP(RDFVocabulary.LHS), lhsa);
 		this.inner.getGraph().getReifier().reifyAs(lhsa.asNode(), lhs);
 		for (Triple t : rhs) {
@@ -432,8 +432,7 @@ public class JenaAlignment implements Alignment {
 			this.inner.add(ea, this.getP(RDFVocabulary.RHS), rhsa);
 			this.inner.getGraph().getReifier().reifyAs(rhsa.asNode(), t);
 		}
-		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION),
-				this.getR(RDFVocabulary.EQ)).add(this.root,
+		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION), this.getR(RDFVocabulary.EQ)).add(this.root,
 				this.getP(RDFVocabulary.HAS_ENTITY_ALIGNMENT), ea);
 	}
 
@@ -441,10 +440,8 @@ public class JenaAlignment implements Alignment {
 	public void addRewritingRule(RewritingRule rule) {
 		Resource lhsa = this.getA();
 		Resource ea = this.getA();
-		this.inner.getGraph().getReifier()
-				.reifyAs(lhsa.asNode(), rule.getLHS());
-		this.inner.add(ea, this.getP(RDFVocabulary.RDF_TYPE),
-				this.getR(RDFVocabulary.ENTITY_ALIGNMENT));
+		this.inner.getGraph().getReifier().reifyAs(lhsa.asNode(), rule.getLHS());
+		this.inner.add(ea, this.getP(RDFVocabulary.RDF_TYPE), this.getR(RDFVocabulary.ENTITY_ALIGNMENT));
 		this.inner.add(ea, this.getP(RDFVocabulary.LHS), lhsa);
 		for (Triple t : rule.getRHS()) {
 			Resource rhsa = this.getA();
@@ -459,27 +456,21 @@ public class JenaAlignment implements Alignment {
 					params.add(this.getR(p.getURI()));
 				if (p.isBlank())
 					params.add(this.getA(p.getBlankNodeId()));
-				if (p.isLiteral()){
-					//Node n = Node.createLiteral(p.getLiteralValue().toString(), p.getLiteralLanguage(), p.getLiteralDatatype());
+				if (p.isLiteral()) {
+					// Node n =
+					// Node.createLiteral(p.getLiteralValue().toString(),
+					// p.getLiteralLanguage(), p.getLiteralDatatype());
 					RDFNode n = this.inner.createTypedLiteral(p.getLiteralValue().toString(), p.getLiteralDatatype());
 					params.add(n);
 				}
-					
+
 			}
-			this.inner
-					.getGraph()
-					.getReifier()
-					.reifyAs(
-							fdr.asNode(),
-							new Triple(fd.getVar(), this.getP(fd.getFuncURI())
-									.asNode(), params.asNode()));
-			this.inner.add(ea,
-					this.getP(RDFVocabulary.HAS_FUNCTIONAL_DEPENDENCY), fdr);
+			this.inner.getGraph().getReifier().reifyAs(fdr.asNode(),
+					new Triple(fd.getVar(), this.getP(fd.getFuncURI()).asNode(), params.asNode()));
+			this.inner.add(ea, this.getP(RDFVocabulary.HAS_FUNCTIONAL_DEPENDENCY), fdr);
 		}
-		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION),
-				this.getR(RDFVocabulary.EQ));
-		this.inner.add(this.root,
-				this.getP(RDFVocabulary.HAS_ENTITY_ALIGNMENT), ea);
+		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION), this.getR(RDFVocabulary.EQ));
+		this.inner.add(this.root, this.getP(RDFVocabulary.HAS_ENTITY_ALIGNMENT), ea);
 	}
 
 	/*
@@ -490,8 +481,7 @@ public class JenaAlignment implements Alignment {
 	@Override
 	public List<String> getTargetDatasetURIs() {
 		ArrayList<String> result = new ArrayList<String>();
-		NodeIterator target = this.inner
-				.listObjectsOfProperty(getP(RDFVocabulary.HAS_TARGET_DATASET));
+		NodeIterator target = this.inner.listObjectsOfProperty(getP(RDFVocabulary.HAS_TARGET_DATASET));
 		for (RDFNode t : target.toList()) {
 			result.add(t.asNode().getURI());
 		}
@@ -507,10 +497,7 @@ public class JenaAlignment implements Alignment {
 	@Override
 	public void setTargetDatasetURIs(List<String> targetDatasetURIs) {
 		for (String uri : targetDatasetURIs) {
-			this.inner
-					.add(this.root,
-							this.getP(RDFVocabulary.HAS_TARGET_DATASET),
-							this.getR(uri));
+			this.inner.add(this.root, this.getP(RDFVocabulary.HAS_TARGET_DATASET), this.getR(uri));
 		}
 	}
 
@@ -529,8 +516,7 @@ public class JenaAlignment implements Alignment {
 		Function func = resolver.get(t.getPredicate());
 		Node params_node = t.getObject();
 		List<Node> params = getCollection(params_node);
-		return new FunctionalDependency(var, func, params, t.getPredicate()
-				.getURI());
+		return new FunctionalDependency(var, func, params, t.getPredicate().getURI());
 	}
 
 	/**
@@ -542,8 +528,7 @@ public class JenaAlignment implements Alignment {
 	 */
 	private List<Node> getCollection(Node root) {
 		ArrayList<Node> result = new ArrayList<Node>();
-		List<Triple> fi = this.inner.getGraph()
-				.find(root, Node.createURI(RDFVocabulary.FIRST), null).toList();
+		List<Triple> fi = this.inner.getGraph().find(root, Node.createURI(RDFVocabulary.FIRST), null).toList();
 		if (!fi.isEmpty()) {
 			Node par = fi.get(0).getMatchObject();
 			if (par.isBlank()) {
@@ -553,9 +538,7 @@ public class JenaAlignment implements Alignment {
 		} else {
 			return result;
 		}
-		fi = this.inner.getGraph()
-				.find(root, Node.createURI(RDFVocabulary.SECOND), null)
-				.toList();
+		fi = this.inner.getGraph().find(root, Node.createURI(RDFVocabulary.SECOND), null).toList();
 		if (!fi.isEmpty()) {
 			Node par = fi.get(0).getMatchObject();
 			if (par.isBlank()) {
@@ -565,8 +548,7 @@ public class JenaAlignment implements Alignment {
 		} else {
 			return result;
 		}
-		fi = this.inner.getGraph()
-				.find(root, Node.createURI(RDFVocabulary.THIRD), null).toList();
+		fi = this.inner.getGraph().find(root, Node.createURI(RDFVocabulary.THIRD), null).toList();
 		if (!fi.isEmpty()) {
 			Node par = fi.get(0).getMatchObject();
 			if (par.isBlank()) {
