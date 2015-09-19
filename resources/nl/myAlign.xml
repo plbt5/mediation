@@ -16,14 +16,12 @@
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:ex="http://example.org" 
-	xmlns:ontoA="file:///ontoA.rdf#"
-	xmlns:ontoB="file:///ontoB.rdf#"
+	xmlns:ontoA="file:///ontoA.xml#"
+	xmlns:ontoB="file:///ontoB.xml#"
 	xmlns:proton="http://proton.semanticweb.org/"
 	xmlns:edoal="http://ns.inria.org/edoal/1.0/#">
-
 	<Alignment rdf:about="http://oms.omwg.org/ontoA-ontoB/">
 		<xml>yes</xml>
-
 		<dc:creator>PaulBrandt</dc:creator>
 		<dc:date>2015/08/25</dc:date>
 		<method>manual</method>
@@ -31,8 +29,8 @@
 		<level>2EDOAL</level>
 		<type>?*</type>
 		<onto1>
-			<Ontology rdf:about="&amp;ontoA;">
-				<align:location>file:ontoA.rdf</align:location>
+			<Ontology rdf:about="&ontoA;">
+				<align:location>file:ontoA.xml</align:location>
 				<formalism>
 					<Formalism align:name="OWL1.0" align:uri="http://www.w3.org/2002/07/owl#" />
 				</formalism>
@@ -40,8 +38,8 @@
 			</Ontology>
 		</onto1>
 		<onto2>
-			<Ontology rdf:about="&amp;ontoB;">
-				<location>file:ontoB.rdf</location>
+			<Ontology rdf:about="&ontoB;">
+				<location>file:ontoB.xml</location>
 				<formalism>
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />

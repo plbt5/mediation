@@ -217,7 +217,7 @@ public class MediatorFactory {
 		System.out.println(p);
 		
 		System.out.println("\nAs OWL axioms:\n");
-		s = s + "\nEDOAL Alignment:\n" + this.edoal.Display();
+		s = s + "\nEDOAL Alignment:\n" + this.edoal.toString();
 		
 		//s = s + "rdf:\n" + rdf.toString() + "\n === \n";
 		return s;

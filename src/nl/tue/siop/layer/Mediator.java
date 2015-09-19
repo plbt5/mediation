@@ -178,7 +178,7 @@ public class Mediator {
 	public String toString() {
 		PrintWriter writer;
 		StringWriter stringWriter = new StringWriter();
-		String s = "\n++++ Mediator ++++\n" + this.edoalAlignment.Display() + "\n++++++\n";
+		String s = this.edoalAlignment.toString();
 /*		try {
 			writer = new PrintWriter(stringWriter, true);
 			AlignmentVisitor renderer = new RDFRendererVisitor(writer);

@@ -24,6 +24,8 @@ import org.semanticweb.owl.align.AlignmentVisitor;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 
+import fr.inrialpes.exmo.align.impl.Annotations;
+import fr.inrialpes.exmo.align.impl.Namespace;
 import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.impl.edoal.Transformation;
 import fr.inrialpes.exmo.align.impl.renderer.OWLAxiomsRendererVisitor;
@@ -96,36 +98,22 @@ public class EDOAL {
 	 * @return the printable format of an EDOAL object
 	 */
 	public String toString() {
-		StringBuilder s = new StringBuilder(256);
-		String o1 = null, o2 = null, l = null, t = null;
-		Integer n = 0;
+		PrintWriter writer;
+		StringWriter stringWriter = new StringWriter();
+		String s = "\n +++++ Alignment Summary ++++++\n";
 		try {
-			o1 = this.edoalAlignment.getOntology1URI().toString();
-			o2 = this.edoalAlignment.getOntology2URI().toString();
-			l = this.edoalAlignment.getLevel();
-			t = this.edoalAlignment.getType();
-			n = this.edoalAlignment.nbCells();
+			s += "Ont1 : " + this.edoalAlignment.getOntology1URI().toString() +"\n";
+			s += "Ont2 : " + this.edoalAlignment.getOntology2URI().toString() +"\n";
+			s += "Align: " + this.getName() + "\n";
+			s += "Level: " + this.edoalAlignment.getLevel() +"\n";
+			s += "Type : " + this.edoalAlignment.getType() +"\n";
+			s += "Total: " + this.edoalAlignment.nbCells() + " correspondences\n";
 		} catch (Exception e) {
 			log.log(Level.WARNING, "Couldn't generate the proper string for org.semanticweb.owl.align.Alignment ", e);
 			e.printStackTrace();
 		}
-		s.append("Ont1 : ").append(o1).append("\n");
-		s.append("Ont2 : ").append(o2).append("\n");
-		s.append("Level: ").append(l).append("\n");
-		s.append("Type : ").append(t).append("\n");
-		s.append("Total: ").append(t).append(" correspondences\n");
-		s.append("\n=====\n").append(this.parser.toString());
 
-		return s.toString();
-	}
-
-	/**
-	 * Display the EDOAL alignment as a set of axioms
-	 */
-	public String Display() {
-		PrintWriter writer;
-		StringWriter stringWriter = new StringWriter();
-		String s = "\n++via writer++++\n";
+		s += "\n +++++ EDOAL Alignment ++++++ \n";
 		try {
 			writer = new PrintWriter(stringWriter, true);
 			AlignmentVisitor renderer = new RDFRendererVisitor(writer);
@@ -161,7 +149,7 @@ public class EDOAL {
 	}
 	
 	public String getName() {
-		return this.edoalAlignment.getXNamespaces().getProperty("xml:base", "Fucked!");
+		return this.edoalAlignment.getExtension(Namespace.ALIGNMENT.uri, Annotations.ID);
 	}
 
 }
