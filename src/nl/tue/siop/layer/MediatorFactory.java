@@ -108,12 +108,22 @@ public class MediatorFactory {
 	/**
 	 * The MediatorFactory class creates a mediator, specifically tailored to the alignment
 	 * of choice. 
+	 * @param String The alignment written as one long string
 	 */
 	
-	public MediatorFactory(String edoal) {
-		this.edoal = parseEDOAL(edoal);
+	public MediatorFactory(String edoalAsString) {
+		this.edoal = parseEDOAL(edoalAsString);
 	}
 	
+	/**
+	 * The MediatorFactory class creates a mediator, specifically tailored to the alignment
+	 * of choice. 
+	 * @param File The file that contains the EDOAL alignment
+	 */
+	
+	public MediatorFactory(File edoalAsFile) {
+		this.edoal = parseEDOAL(edoalAsFile);
+	}
 	/**
 	 * Every mediation is based on an EDOAL alignment. Since a mediator is build by its factory, the latter
 	 * needs to parse at least one EDOAL Alignment. 
@@ -128,6 +138,7 @@ public class MediatorFactory {
 			// hence we need to consider them all and cast to the correct type.
 			
 			if ( o instanceof String) edoal = new EDOAL((String) o); 
+			else if ( o instanceof File ) edoal = new EDOAL((File) o );
 			else {
 				log.log(Level.WARNING,	"Class not handled yet:" + o.getClass());
 				throw new UnsupportedOperationException("MediatorFactory: Cannot yet handle EDOAL serialisations of type " + o.getClass());

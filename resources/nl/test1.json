@@ -1,5 +1,5 @@
 {
-	"align": "resources/nl/myAlign.xml"
-	"dataA": "resources/nl/dataA.sparql"
-	"dataB": "resources/nl/dataB.sparql"
+	"align": "resources/nl/test1/myAlign.xml"
+	"dataA": "resources/nl/test1/dataA.sparql"
+	"dataB": ""
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE rdf:RDF [
 <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
-<!ENTITY ontoA	"file:///ontoA.rdf/">
-<!ENTITY ontoB	"file:///ontoB.rdf/">
+<!ENTITY ontoA	"http://tutorial.topbraid.com/ontoA#">
+<!ENTITY ontoB	"http://tutorial.topbraid.com/ontoB#">
 <!ENTITY proton "http://proton.semanticweb.org/">
 ]>
 
@@ -16,10 +16,11 @@
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:ex="http://example.org" 
-	xmlns:ontoA="file:///ontoA.xml#"
-	xmlns:ontoB="file:///ontoB.xml#"
+	xmlns:ontoA="http://tutorial.topbraid.com/ontoA#"
+	xmlns:ontoB="http://tutorial.topbraid.com/ontoB#"
 	xmlns:proton="http://proton.semanticweb.org/"
 	xmlns:edoal="http://ns.inria.org/edoal/1.0/#">
+	
 	<Alignment rdf:about="http://oms.omwg.org/ontoA-ontoB/">
 		<xml>yes</xml>
 		<dc:creator>PaulBrandt</dc:creator>
@@ -27,19 +28,19 @@
 		<method>manual</method>
 		<purpose>initial example for a simple alignment</purpose>
 		<level>2EDOAL</level>
-		<type>?*</type>
+		<type>**</type>
 		<onto1>
 			<Ontology rdf:about="&ontoA;">
-				<align:location>file:ontoA.xml</align:location>
 				<formalism>
-					<Formalism align:name="OWL1.0" align:uri="http://www.w3.org/2002/07/owl#" />
+<!-- 				<align:location>file:///ontoA.xml</align:location> -->
+					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
+						align:name="OWL1.0" />
 				</formalism>
-
 			</Ontology>
 		</onto1>
 		<onto2>
 			<Ontology rdf:about="&ontoB;">
-				<location>file:ontoB.xml</location>
+				<location>file:///ontoB.xml</location>
 				<formalism>
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
@@ -50,10 +51,10 @@
 		<map>
 			<Cell rdf:about="MappingRule_0">
 				<entity1>
-					<edoal:Class rdf:about="&amp;ontoA;OneEq" />
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
 				</entity1>
 				<entity2>
-					<edoal:Class rdf:about="&amp;ontoB;OneEq" />
+					<edoal:Class rdf:about="&ontoB;OneEq" />
 				</entity2>
 				<measure rdf:datatype="&xsd;float">1.0</measure>
 				<relation>Equivalence</relation>

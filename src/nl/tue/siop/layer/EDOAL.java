@@ -5,6 +5,8 @@ package nl.tue.siop.layer;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -92,6 +94,22 @@ public class EDOAL {
 	public EDOAL(String s) throws AlignmentException {
 		this(); // Call the base constructor to set the generic stuff
 		this.edoalAlignment = (EDOALAlignment) this.parser.parseString(s);
+	}
+
+	/**
+	 * @param f
+	 * @throws AlignmentException 
+	 */
+	public EDOAL(File f) throws AlignmentException {
+		this(); // Call the base constructor to set the generic stuff
+		FileReader r;
+		try {
+			r = new FileReader (f);
+			this.edoalAlignment = (EDOALAlignment) this.parser.parse(r);
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, "File does not exist: ", f);
+			e.printStackTrace();
+		}
 	}
 
 	/**

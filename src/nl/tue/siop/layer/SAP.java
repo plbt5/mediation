@@ -59,25 +59,22 @@ public class SAP {
 	 *            object as opposed to a file that needs to be read first TODO
 	 *            the mediator should be able to handle more than one EDOAL
 	 *            alignment
+	 * @throws IOException 
 	 */
-	public void addEDOALALignment(File edoalFile) throws UnsupportedOperationException {
+	public void addEDOALALignment(File edoalFile) throws UnsupportedOperationException, AlignmentException, IOException {
 		if (this.m != null) {
 			throw new UnsupportedOperationException(
 					"Not Supported Yet: Attempt to add another EDOAL alignment to existing mediator");
 		} else {
-			try {
-				String edoalString = Utilities.readFile(edoalFile, StandardCharsets.UTF_8);
-				MediatorFactory mf = new MediatorFactory(edoalString);
-				this.m = mf.createMediator();
-				
-				Alignment patterns = m.getMediation();
+			String edoalString = Utilities.readFile(edoalFile, StandardCharsets.UTF_8);
+			MediatorFactory mf = new MediatorFactory(edoalString);
+			//MediatorFactory mf = new MediatorFactory(edoalFile);
+			this.m = mf.createMediator();
+			
+			Alignment patterns = m.getMediation();
 
-				// Add the CONSTRUCT queries
-				this.m.addAllConstruct(constructQuery(patterns));
-			} catch (IOException e) {
-				log.log(Level.SEVERE, "Couldn't load the alignment from: " + edoalFile, e);
-				e.printStackTrace();
-			}
+			// Add the CONSTRUCT queries
+			this.m.addAllConstruct(constructQuery(patterns));
 		}
 	}
 

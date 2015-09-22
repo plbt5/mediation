@@ -41,7 +41,7 @@
 		</onto1>
 		<onto2>
 			<Ontology rdf:about="&vin;">
-				<location>http://www.scharffe.fr/ontologies/OntologieDuVin.wsml</location>
+<!-- 				<location>http://www.scharffe.fr/ontologies/OntologieDuVin.wsml</location> -->
 				<formalism>
 					<Formalism align:uri="http://www.wsmo.org/wsml/wsml-syntax/wsml-dl"
 						align:name="wsml" />

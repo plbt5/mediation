@@ -1,0 +1,9 @@
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontA:  <http://tutorial.topbraid.com/ontoA#>
+
+SELECT ?v WHERE 
+	{
+         ?v a ontA:unEquivanox .
+    } 
+LIMIT 10

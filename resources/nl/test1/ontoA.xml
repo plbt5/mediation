@@ -28,21 +28,21 @@
 		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TwoSubSet2</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
-	<owl:Class rdf:ID="OneEq">
+	<owl:Class rdf:ID="unEquivanox">
 		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">equal
 			to ontoB:OneEq</rdfs:comment>
 		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">oneEq</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
-	<OneEq rdf:ID="Inst_1-OneEq">
-		<rdfs:label>Inst_1-OneEq</rdfs:label>
+	<unEquivanox rdf:ID="Inst_1-OneEq">
+		<rdfs:label>Inst_1-unEquivanox</rdfs:label>
 		<rdfs:comment>An instance of the class One, representing Equivalence
 			to its peer from ontoB</rdfs:comment>
-	</OneEq>
-	<OneEq rdf:ID="Inst_2-OneEq">
-		<rdfs:label>Inst_2-OneEq</rdfs:label>
+	</unEquivanox>
+	<unEquivanox rdf:ID="Inst_2-OneEq">
+		<rdfs:label>Inst_2-unEquivanox</rdfs:label>
 		<rdfs:comment>An instance of the class One</rdfs:comment>
-	</OneEq>
+	</unEquivanox>
 	<TwoSubSet2 rdf:ID="Inst_1-TwoSubSet2">
 		<rdfs:label>Inst_1-TwoSubSet2</rdfs:label>
 		<rdfs:comment>The first instance of the class TwoSubSet2</rdfs:comment>
