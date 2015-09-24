@@ -65,7 +65,7 @@ public class demo {
 					try {
 						sap.addEDOALALignment(alignFile);
 					} catch (UnsupportedOperationException e) {
-						log.log(Level.SEVERE, "SAP: Cannot add EDOAL alignment: " + alignFile);
+						log.log(Level.SEVERE, "Cannot add EDOAL alignment: " + alignFile);
 					}
 					sap.showMediation();
 
@@ -75,17 +75,39 @@ public class demo {
 					try {
 						qryString = Utilities.readFile(dataAFileName, StandardCharsets.UTF_8);
 					} catch (IOException e) {
-						log.log(Level.SEVERE, "SAP: Cannot read from: " + dataAFileName);
+						log.log(Level.SEVERE, "Cannot read from: " + dataAFileName);
 						e.printStackTrace();
 					}
 					System.out.println("----> Original query: [\n" + qryString + "\n]\n");
 					if (!sap.send(qryString)) {
-						log.log(Level.SEVERE, "SAP: Cannot send query: " + qryString);
+						log.log(Level.SEVERE, "Cannot send query: " + qryString);
 					}
 
-					// Simulate the SAP call from the other app to receive its
-					// data
-					// TODO call SAP.receive
+					File dataBFile = new File(dataBFileName);
+					if (dataBFile.exists() && !dataBFile.isDirectory()) {
+						// Simulate the SAP call from the other app to receive its
+						// data
+						//
+						// Firstly, initialise the simulation, e.g.
+						// put the 'received' query from the file into the protocol's receipt message
+						qryString = null;
+						try {
+							qryString = Utilities.readFile(dataBFileName, StandardCharsets.UTF_8);
+						} catch (IOException e) {
+							log.log(Level.SEVERE, "Cannot read from: " + dataBFileName);
+							e.printStackTrace();
+						}
+						sap.getP().setMessageR(qryString);
+						// Secondly, as an application, get the received message
+						Query rcvdQry = sap.receive();
+						if (rcvdQry != null) {
+							System.out.println("----> Received native query: [\n" + rcvdQry + "\n]\n");
+						} else {
+							log.log(Level.SEVERE, "Cannot receive query.");
+						} 
+					} else {
+						log.log(Level.INFO, "Cannot demonstrate inverse translation due to absence of dataBFile.");
+					}
 
 				} else {
 					log.log(Level.SEVERE, "EDOAL alignment file does not exist: " + alignFile);

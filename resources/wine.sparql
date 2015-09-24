@@ -1,0 +1,11 @@
+PREFIX wine:    <http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?v ?y 
+WHERE 
+	{ ?v 	a	wine:VintageYear , 
+	  			wine:Bordeaux ; 
+	  		wine:yearValue ?y.
+	} 
+LIMIT 10

@@ -41,6 +41,14 @@ public class SAP {
 	private Mediator m;
 	private Protocol p;
 
+	/**
+	 * @return the protocol handler 
+	 * TODO this should not be necessary (and hence should be removed) when the protocol handler is duplicated into communicating peers
+	 */
+	public Protocol getP() {
+		return p;
+	}
+
 	public SAP() {
 		try {
 			this.p = new Protocol();
@@ -122,7 +130,8 @@ public class SAP {
 	 */
 	public Query receive() {
 		Query sq = QueryFactory.create(p.receive(), Syntax.syntaxARQ);
-		return sq;
+		Query tq = this.m.translate(sq);
+		return tq;
 	}
 
 	/**

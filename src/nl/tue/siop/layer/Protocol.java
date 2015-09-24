@@ -12,18 +12,9 @@ public class Protocol {
 	/**
 	 * This represents a message that will be 'received';
 	 * Temporarily until the protocol becomes communicating twin instances.
-	 * 
+	 * TODO Duplicate Protocol Handlers to represent being each others peer
 	 */
-	private String messageR = 
-				"PREFIX ex:	<http://example.org/demo#>\n" +
-				"PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-				"PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
-				"SELECT ?person\n" +
-				"WHERE {\n" +
-				"    ?person a ex:Person .\n" +
-				"    ?person ex:age ?age .\n" +
-				"    FILTER (?age > 18) .\n" +
-				"}";
+	private String messageR = null;
 				
 	/**
 	 * @param messageR the messageR to set
@@ -40,11 +31,12 @@ public class Protocol {
 	}
 	
 	public boolean send(String msg) {
-		System.out.println("Sending message:\n" + msg + "\n");
+		System.out.println("Sending foreign message:\n" + msg + "\n");
 		return true;
 	}
 	
 	public String receive() {
+		System.out.println("Receiving foreign message:\n" + this.messageR + "\n");
 		return this.messageR;
 	}
 }

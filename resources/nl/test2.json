@@ -1,0 +1,5 @@
+{
+	"align": "resources/wineexample.xml"
+	"dataA": "resources/wine.sparql"
+	"dataB": ""
+}
