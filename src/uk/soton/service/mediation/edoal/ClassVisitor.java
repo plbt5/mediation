@@ -221,7 +221,7 @@ public class ClassVisitor implements EDOALVisitor  , MediationResultGenerator{
 			this.mr.getFD().add(vv.getFD());
 			//TODO : manage all cases of ValueExpression
 			PropertyVisitor.$().setS(cs).setO(os).setMediationResult(this.mr).visit(cvr.getRestrictionPath());
-		} else Logger.getAnonymousLogger().log(Level.WARNING, "Only EQUAL restriction allowed.");
+		} else Logger.getAnonymousLogger().log(Level.WARNING, "Only EQUAL restriction allowed (at this moment).");
 	}
  
 	/**
@@ -238,6 +238,7 @@ public class ClassVisitor implements EDOALVisitor  , MediationResultGenerator{
 	 * The visit method for ClassConstruction instances
 	 * @param ce ClassConstruction instance
 	 * @throws AlignmentException
+	 * TODO visit(ClassConstruction): Implement other constructors than only AND
 	 * 
 	 */
 	public void visit(ClassConstruction ce) throws AlignmentException {

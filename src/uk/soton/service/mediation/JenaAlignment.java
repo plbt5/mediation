@@ -342,7 +342,9 @@ public class JenaAlignment implements Alignment {
 	@Override
 	public void setSourceOntologyURIs(List<String> sourceOntologyURIs) {
 		for (String uri : sourceOntologyURIs) {
-			this.inner.add(this.root, this.inner.createProperty(RDFVocabulary.HAS_SOURCE_ONTOLOGY), this.getR(uri));
+			Property p = this.inner.createProperty(RDFVocabulary.HAS_SOURCE_ONTOLOGY);
+			Resource r = this.getR(uri);
+			this.inner.add(this.root, p, r);
 		}
 	}
 
@@ -370,7 +372,7 @@ public class JenaAlignment implements Alignment {
 		if (this.patterns != null) {
 			return this.patterns;
 		}
-		// log.log(Level.INFO, "Model: " + this.inner);
+		log.log(Level.INFO, "Model: " + this.inner);
 		Hashtable<Triple, List<Triple>> result = new Hashtable<Triple, List<Triple>>();
 		fdependencies = new Hashtable<Triple, Hashtable<Node, FunctionalDependency>>();
 		ResIterator ei = inner.listSubjectsWithProperty(getP(RDFVocabulary.RDF_TYPE),
