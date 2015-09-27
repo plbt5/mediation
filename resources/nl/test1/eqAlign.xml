@@ -32,7 +32,7 @@
 		<onto1>
 			<Ontology rdf:about="&ontoA;">
 				<formalism>
-<!-- 				<align:location>file:///ontoA.xml</align:location> -->
+<!-- 				<location>file:///ontoA.xml</location> -->
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
 				</formalism>

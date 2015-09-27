@@ -1,0 +1,13 @@
+PREFIX vin:    <http://ontology.deri.org/vin#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT  ?v ?y
+WHERE
+  { ?v   a  vin:Millesime ,
+           vin:Vin ;
+         vin:hasTerroir  ?_2 .
+    ?_2  <http://proton.semanticweb.org/locatedIn>  vin:Aquitaine .
+    ?v   vin:anneeMillesime  ?y .
+  }
+LIMIT 10

@@ -79,10 +79,10 @@ public class SAP {
 			//MediatorFactory mf = new MediatorFactory(edoalFile);
 			this.m = mf.createMediator();
 			
-			Alignment patterns = m.getMediation();
+			Alignment mediation = m.getMediation();
 
 			// Add the CONSTRUCT queries
-			this.m.addAllConstruct(constructQuery(patterns));
+			this.m.addAllConstruct(constructQuery(mediation));
 		}
 	}
 
@@ -141,7 +141,7 @@ public class SAP {
 
 	public void showMediation() {
 		String medString = this.m.toString();
-		log.log(Level.INFO, "Current mediation: \n" + medString);
+		log.log(Level.INFO, this.m.toString() + " mediates according to alignment: \n" + m.getEdoalAlignment().asAxioms());
 		return;
 	}
 }

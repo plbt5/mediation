@@ -12,20 +12,20 @@
 		<owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created with TopBraid
 			Composer</owl:versionInfo>
 	</owl:Ontology>
-	<owl:Class rdf:ID="TwoSubSet1">
+	<owl:Class rdf:ID="DeuxSubSet1">
 		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">subset
 			of ontoB:TwoSubSet</rdfs:comment>
-		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TwoSubSet1</rdfs:label>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet1</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 		<owl:disjointWith>
-			<owl:Class rdf:ID="TwoSubSet2" />
+			<owl:Class rdf:ID="DeuxSubSet2" />
 		</owl:disjointWith>
 	</owl:Class>
-	<owl:Class rdf:about="#TwoSubSet2">
-		<owl:disjointWith rdf:resource="#TwoSubSet1" />
+	<owl:Class rdf:about="DeuxSubSet2">
+		<owl:disjointWith rdf:resource="DeuxSubSet2" />
 		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">subset
-			of ontoB:TwoSubSet</rdfs:comment>
-		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TwoSubSet2</rdfs:label>
+ of ontoB:TwoSubSet</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet2</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
 	<owl:Class rdf:ID="unEquivanox">
@@ -34,12 +34,12 @@
 		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">oneEq</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
-	<unEquivanox rdf:ID="Inst_1-OneEq">
+	<unEquivanox rdf:ID="Inst_1-unEquivanox">
 		<rdfs:label>Inst_1-unEquivanox</rdfs:label>
 		<rdfs:comment>An instance of the class One, representing Equivalence
-			to its peer from ontoB</rdfs:comment>
+ to its peer from ontoB</rdfs:comment>
 	</unEquivanox>
-	<unEquivanox rdf:ID="Inst_2-OneEq">
+	<unEquivanox rdf:ID="Inst_2-unEquivanox">
 		<rdfs:label>Inst_2-unEquivanox</rdfs:label>
 		<rdfs:comment>An instance of the class One</rdfs:comment>
 	</unEquivanox>

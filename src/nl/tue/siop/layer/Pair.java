@@ -4,8 +4,7 @@
 package nl.tue.siop.layer;
 
 /**
- * A Utility class that implements a pair of things. Used here to 
- * keep a forward and backward mediation together.
+ * A Utility class that implements a pair of things. 
  * @author Paul Brandt <paul@brandt.name>
  *
  */

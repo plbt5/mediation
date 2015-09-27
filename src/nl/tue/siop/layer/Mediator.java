@@ -4,7 +4,10 @@
 package nl.tue.siop.layer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -12,6 +15,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.semanticweb.owl.align.AlignmentException;
 import org.semanticweb.owl.align.AlignmentVisitor;
@@ -40,17 +45,25 @@ import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
  * preserves the semantics as has been specified by the Alignment that it has
  * been generated from (see the MeditiatorGenerator class).<br/>
  *
- * @author brandtp
+ * @author Paul Brandt <paul@brandt.name>
  *
  */
 public class Mediator {
+
+	private static final Logger log = Logger.getLogger( Mediator.class.getName() );
 
 	/**
 	 * The particular mediation that holds the actual translation rules to apply
 	 * for this specific mediator.
 	 */
 	private Alignment mediation = null;
-
+	
+	/**
+	 * Keep track of the amount of mediators involved. At least to generate a unique name for each.
+	 */
+	static private int nbOfMediators = 0;
+	private String id;
+	
 	/**
 	 * At least for printing purposes it is handy to have available a jena RDF model   
 	 */
@@ -78,6 +91,7 @@ public class Mediator {
 	public Mediator(EDOAL edoal) {
 		constructs = new ArrayList<Query>();
 		edoalAlignment = edoal;
+		id = "mediator_" + ++Mediator.nbOfMediators;
 	}
 	
 	/**
@@ -112,20 +126,45 @@ public class Mediator {
 			Op translated = Transformer.transform(translation, op);
 			rhe = ExtendedOpAsQuery.asQuery(translated);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			log.log(Level.SEVERE, "Couldn't translate the query: "  + lhe + "\n", e);
 			e.printStackTrace();
 		}
-
 		return rhe;
 	}
 
-	public String transform(String filename) {
+	/**
+	 * Mediate between the two data elements, i.e., translate the left hand one
+	 * into the the right hand one.
+	 * 
+	 * Transformation by rewriteQuery was not yet implemented in the old
+	 * align.java that this mediation package currently makes use of.
+	 * TODO upgrade to most recent Alignment API
+	 * 
+	 * @param filename
+	 * @return String translated query
+	 * @throws FileNotFoundException, IOException 
+	 */
+	public Query translate(File file) throws FileNotFoundException, IOException {
+		log.log(Level.INFO, "Need to Ugrade to Alignment API 4.7 in order to apply BasisAlignment.rewriteQuery()\nWill translate in functional identical old way.");
 		// Transform query
-		String transformedQuery = "Need to Ugrade to Alignment API 4.7 in order to apply BasisAlignment.rewriteQuery() ";
+		//
+		
+		//
+		Query transformedQuery = null;
 		//BasicAlignment al = (BasicAlignment) this.mediation;
+		//Properties parameters = new Properties();
+		//
+		// Transformation by rewriteQuery was not yet implemented in the old
+		// align.java that this
+		// mediati0on package currently makes use of.
+		// TODO upgrade to most recent Alignment API
+		//
+		// transformedQuery = al.rewriteQuery( queryString, parameters );
 
-		try {
-			InputStream in = new FileInputStream(filename);
+		// Translate by reading file and transforming string into query, then translate(query)
+		
+		if (file.exists() && !file.isDirectory()) {
+			InputStream in = new FileInputStream(file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			String queryString = "";
@@ -133,78 +172,25 @@ public class Mediator {
 				queryString += line + "\n";
 			}
 			reader.close();
-			
-			//Properties parameters = new Properties();
-			//
-			// Transformation by rewriteQuery was not yet implemented in the old
-			// align.java that this
-			// mediati0on package currently makes use of.
-			// TODO upgrade to most recent Alignment API
-			//
-			// transformedQuery = al.rewriteQuery( queryString, parameters );
-		} catch (Exception ex) {
-			ex.printStackTrace();
+			transformedQuery = translate(QueryFactory.create(queryString));
+		} else {
+			throw new FileNotFoundException("Query file does not exist: " + file.toString());
 		}
 		return transformedQuery;
 	}
 
 	/**
-	 * Mediate between the two data elements in the opposite direction, i.e.,
-	 * translate the right hand one into the left hand one.
 	 * 
-	 * @param RHE
-	 *            - the right hand data element that is taken as input
-	 * @return LHE - the left hand data element as result of the translation
-	 */
-	public Query translateInverse(Query rhe) {
-		Query lhe = null;
-		try {
-			Query query = QueryFactory.create(rhe.toString(), Syntax.syntaxARQ);
-			Op op = Algebra.compile(query);
-			EntityTranslationService ets = new EntityTranslationServiceImpl();
-			Transform translation = new EntityTranslation(ets, this.mediation);
-			Op translated = Transformer.transform(translation, op);
-			lhe = ExtendedOpAsQuery.asQuery(translated);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return lhe;
-	}
-
-	/**
-	 * Display the EDOAL alignment as a set of axioms
 	 */
 	public String toString() {
-		PrintWriter writer;
-		StringWriter stringWriter = new StringWriter();
-		String s = this.edoalAlignment.toString();
-/*		try {
-			writer = new PrintWriter(stringWriter, true);
-			AlignmentVisitor renderer = new RDFRendererVisitor(writer);
-			
-					
-			((org.semanticweb.owl.align.Alignment) this.edoalAlignment).render(renderer);
-			//this.owlAlignment.render(renderer);
-			//this.mediation.render(renderer);
-			// TODO Apparently, this is not the way to operate a writer in order to produce strings
-			s += stringWriter.toString() + "\n++++++\n";
-			
-			
-			writer.flush();
-			writer.close();
-		} catch (AlignmentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		return s;
+		return getId();
 	}
 
 	/**
 	 * Getters
 	 * @return EDOAL the edoal alignment that this mediator is working from
 	 */
-	EDOAL getEdoalAlignments() {
+	public EDOAL getEdoalAlignment() {
 		return this.edoalAlignment;
 	}
 	
@@ -212,7 +198,11 @@ public class Mediator {
 	 * Getters
 	 * @return Mediation the mediation that this mediator is working with
 	 */
-	Alignment getMediation() {
+	public Alignment getMediation() {
 		return this.mediation;
+	}
+	
+	public String getId() {
+		return this.id;
 	}
 }

@@ -169,5 +169,28 @@ public class EDOAL {
 	public String getName() {
 		return this.edoalAlignment.getExtension(Namespace.ALIGNMENT.uri, Annotations.ID);
 	}
-
+	
+	
+	/**
+	 * Get the EDOAL alignment as a set of axioms
+	 */
+	public String asAxioms() {
+		PrintWriter writer;
+		String s = null;
+		StringWriter stringWriter = new StringWriter();
+		try {
+			writer = new PrintWriter(stringWriter, true);
+			AlignmentVisitor renderer = new RDFRendererVisitor(writer);
+			((org.semanticweb.owl.align.Alignment) this.edoalAlignment).render(renderer);
+			//this.owlAlignment.render(renderer);
+			//this.mediation.render(renderer);
+			// TODO Apparently, this is not the way to operate a writer in order to produce strings
+			s += stringWriter.toString();
+			writer.flush();
+			writer.close();
+		} catch (AlignmentException e) {
+			log.log(Level.WARNING, "Couldn't render EDOAL alignment into axioms.", e);
+		}
+		return s;
+	}
 }
