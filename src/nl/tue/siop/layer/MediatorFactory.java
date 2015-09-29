@@ -48,6 +48,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 
+import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.impl.edoal.Transformation;
 import fr.inrialpes.exmo.align.parser.AlignmentParser;
 import uk.soton.service.mediation.Alignment;
@@ -61,7 +62,7 @@ import uk.soton.service.mediation.edoal.EDOALMediator;
 import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
 
 /**
- * The Class MediatorFactory manages (generates, deletes?) Mediators. 
+ * The Class MediatorFactory generates Mediators. 
  *
  * The MediatorFactory Class provides the following features:<br/>
  * // TODO wat zijn die features dan?
@@ -75,16 +76,16 @@ public class MediatorFactory {
 	/**
 	 * A MediatorFactory is the result of an alignment. This is the EDOAL alignment that it originates from.
 	 */	
-	private EDOAL edoal = null;
-	
-	EDOAL getEdoal() {
-		return this.edoal;
-	}
+	//private EDOAL edoal = null;
+//	
+//	EDOAL getEdoal() {
+//		return this.edoal;
+//	}
 	
 	/**
 	 * The mediators that this factory manages
 	 */
-	private static List<Mediator> mediators = new ArrayList<Mediator>();
+//	private static List<Mediator> mediators = new ArrayList<Mediator>();
 
 	/**
 	 * An mediator transforms data between two ontologies. Those tranformations are specified by this mediation
@@ -96,64 +97,25 @@ public class MediatorFactory {
 	 * 		other type of rewriting rules. An even better solution would be to abstract the different types of 
 	 * 		Alignments away in a Mediation Class.
 	 */	
-	private Alignment mediation = null;
+//	private Alignment mediation = null;
 	
 	/**
 	 * At least for printing purposes it is handy to have available a jena RDF model   
 	 */
-	private Model RDFmodel = null;
+//	private Model RDFmodel = null;
 	
 	//private org.semanticweb.owl.align.Alignment al = null;
 	
-	/**
-	 * The MediatorFactory class creates a mediator, specifically tailored to the alignment
-	 * of choice. 
-	 * @param String The alignment written as one long string
-	 */
-	
-	public MediatorFactory(String edoalAsString) {
-		this.edoal = parseEDOAL(edoalAsString);
-	}
-	
+
 	/**
 	 * The MediatorFactory class creates a mediator, specifically tailored to the alignment
 	 * of choice. 
 	 * @param File The file that contains the EDOAL alignment
 	 */
 	
-	public MediatorFactory(File edoalAsFile) {
-		this.edoal = parseEDOAL(edoalAsFile);
+	public MediatorFactory() {
 	}
-	/**
-	 * Every mediation is based on an EDOAL alignment. Since a mediator is build by its factory, the latter
-	 * needs to parse at least one EDOAL Alignment. 
-	 * 
-	 * @param object of type: String, URI, Reader or InputStream; containing the EDOAL alignment
-	 * @throws AlignmentException the alignment exception
-	 */
-	private EDOAL parseEDOAL(Object o) throws UnsupportedOperationException {
-		EDOAL edoal = null;
-		try {
-			// Read and parse the EDOAL alignment. Several serialisations for alignments exists
-			// hence we need to consider them all and cast to the correct type.
-			
-			if ( o instanceof String) edoal = new EDOAL((String) o); 
-			else if ( o instanceof File ) edoal = new EDOAL((File) o );
-			else {
-				log.log(Level.WARNING,	"Class not handled yet:" + o.getClass());
-				throw new UnsupportedOperationException("MediatorFactory: Cannot yet handle EDOAL serialisations of type " + o.getClass());
-			}
-			
-			//if ( o instanceof String) this.edoal.align = this.edoal.parser.parseString((String) o); 
-			//if ( o instanceof URI ) this.edoal.align = this.edoal.parser.parse( (URI) o );
-			//if ( o instanceof Reader ) this.edoal.align = this.edoal.parser.parse((Reader) o);
-			//if ( o instanceof InputStream ) this.edoal.align = this.edoal.parser.parse((InputStream) o);
-			//else Logger.getAnonymousLogger().log(Level.WARNING,	"Class not handled yet:" + o.getClass());
-		} catch (AlignmentException e) {
-			log.log(Level.SEVERE, "Couldn't load the EDOAL alignment:", e);
-		}
-		return edoal;
-	}
+
 	
 	/**
 	 * Create a mediator.
@@ -163,20 +125,22 @@ public class MediatorFactory {
 	 * <edoal><map><Cell><entity1> now is implicitly defined as rdf:resource=''
 	 * @return
 	 */
-	public Mediator createMediator() throws NullPointerException {
-		Mediator m = new Mediator(this.edoal);
+	public Mediator createMediator(EDOALAlignment ea) throws NullPointerException {
+		Mediator m = new Mediator(ea);
 		try {
-			m.setMediation(generateMediation());
+			m.setJenaAlignment(generateMediation(ea));
 		} catch (AlignmentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (m.getMediation() == null) {
+		if (m.getJenaAlignment() == null) {
 			throw new NullPointerException("Couldn't generate mediation");
 		}
-		MediatorFactory.mediators.add(m);
+//		MediatorFactory.mediators.add(m);
 		return m;
 	}
+	
+	
 	/**
 	 * Generates the mediation rewriting rules from their definition in the alignment specification. 
 	 * Only when the mediation rules have been generated, it is able to process and transform statements from 
@@ -186,53 +150,53 @@ public class MediatorFactory {
 	 * @throws AlignmentException the alignment exception
 	 * TODO: Generate the mediation rules for other data languages than RDF (e.g., SPIN?)
 	 */
-	private Alignment generateMediation() throws AlignmentException {
-		Alignment mediation = null;
+	private JenaAlignment generateMediation(EDOALAlignment ea) throws AlignmentException {
+		JenaAlignment alignment = null;
 		try {
-			mediation = EDOALMediator.mediate(this.edoal.getAlignment());
+			alignment = (JenaAlignment) EDOALMediator.mediate(ea);
 		} catch (AlignmentException e) {
 			log.log(Level.SEVERE, "Couldn't generate the proper rewriting rules for this mediation: " +
-					this.edoal.getName(), e);
+					ea.toString(), e);
 		}
-		return mediation;
+		return alignment;
 	}
 	
 	/**
 	 * @return the mediation
 	 */
-	public Alignment getMediation() {
-		return this.mediation;
-	}
+//	public Alignment getMediation() {
+//		return this.mediation;
+//	}
 
 	/**
 	 * @return the printable format of the mediation
 	 */
-	public String toString() {
-		this.RDFmodel = ((JenaAlignment)this.mediation).getModel();
-		String syntax = "N-TRIPLE";
-		StringWriter rdf = new StringWriter();
-		RDFmodel.write(rdf, syntax);
-		
-		String s = "Mediation:\n";
-		Hashtable<Triple, List<Triple>> p = this.mediation.getPatterns();
-
-/*		Enumeration <Triple>ek = p.keys();
-		Enumeration <List<Triple>>ee = p.elements();
-		while (ek.hasMoreElements()) {
-			s = s + "Key: "+ ek.nextElement().toString() + "\n";
-			s = s + "Elt: "+ ee.nextElement().toString() + "\n";
-		}*/
-		
-		System.out.println("s:\n" + s);
-		System.out.println("Full map:\n");
-		System.out.println(p);
-		
-		System.out.println("\nAs OWL axioms:\n");
-		s = s + "\nEDOAL Alignment:\n" + this.edoal.toString();
-		
-		//s = s + "rdf:\n" + rdf.toString() + "\n === \n";
-		return s;
-		//return s.concat(this.edoal.toString());
-	}
+//	public String toString() {
+//		this.RDFmodel = ((JenaAlignment)this.mediation).getModel();
+//		String syntax = "N-TRIPLE";
+//		StringWriter rdf = new StringWriter();
+//		RDFmodel.write(rdf, syntax);
+//		
+//		String s = "Mediation:\n";
+//		Hashtable<Triple, List<Triple>> p = this.mediation.getPatterns();
+//
+///*		Enumeration <Triple>ek = p.keys();
+//		Enumeration <List<Triple>>ee = p.elements();
+//		while (ek.hasMoreElements()) {
+//			s = s + "Key: "+ ek.nextElement().toString() + "\n";
+//			s = s + "Elt: "+ ee.nextElement().toString() + "\n";
+//		}*/
+//		
+//		System.out.println("s:\n" + s);
+//		System.out.println("Full map:\n");
+//		System.out.println(p);
+//		
+//		System.out.println("\nAs OWL axioms:\n");
+//		s = s + "\nEDOAL Alignment:\n" + this.edoal.toString();
+//		
+//		//s = s + "rdf:\n" + rdf.toString() + "\n === \n";
+//		return s;
+//		//return s.concat(this.edoal.toString());
+//	}
 
 }

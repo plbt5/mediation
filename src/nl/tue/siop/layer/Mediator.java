@@ -31,10 +31,12 @@ import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 
 import fr.inrialpes.exmo.align.impl.BasicAlignment;
+import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.impl.renderer.RDFRendererVisitor;
 import uk.soton.service.mediation.Alignment;
 import uk.soton.service.mediation.EntityTranslationService;
 import uk.soton.service.mediation.EntityTranslationServiceImpl;
+import uk.soton.service.mediation.JenaAlignment;
 import uk.soton.service.mediation.algebra.EntityTranslation;
 import uk.soton.service.mediation.algebra.ExtendedOpAsQuery;
 import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
@@ -53,30 +55,37 @@ public class Mediator {
 	private static final Logger log = Logger.getLogger( Mediator.class.getName() );
 
 	/**
-	 * The particular mediation that holds the actual translation rules to apply
+	 * The particular jenaAlignment that holds the actual translation rules to apply
 	 * for this specific mediator.
 	 */
-	private Alignment mediation = null;
+	private JenaAlignment jenaAlignment = null;
 	
 	/**
-	 * Keep track of the amount of mediators involved. At least to generate a unique name for each.
+	 * Generate a unique name for each mediator.
 	 */
-	static private int nbOfMediators = 0;
+	static private int counter = 0;
 	private String id;
 	
 	/**
 	 * At least for printing purposes it is handy to have available a jena RDF model   
 	 */
-	private Model RDFmodel = null;
-	private org.semanticweb.owl.align.Alignment owlAlignment = null;
+	// private Model RDFmodel = null;
+	// private org.semanticweb.owl.align.Alignment owlAlignment = null;
 	
 	/**
 	 * The mediator is based on an EDOAL Alignment(s). This represent that very EDOAL alignment.
 	 * TODO Facilitate more than one single EDOAL alginment.
 	 * 
 	 */
-	private EDOAL edoalAlignment = null;
+	//private EDOAL edoalAlignment = null;
 
+	/**
+	 * The alignment that is used as source for all operations has been
+	 * implemented as just another semanticweb alignment type. However, it is
+	 * constructed from an EDOAL alignment.
+	 */
+	private EDOALAlignment edoalAlignment = null;
+	
 	/**
 	 * An alignment can provide translations for SQL-like commands as well: 
 	 * CONSTRUCT, ASK, and DESCRIBE; the SELECT statement is part of the message that 
@@ -88,17 +97,17 @@ public class Mediator {
 	 * Constructor - creates the mediator object and initialises its processing
 	 * queue
 	 */
-	public Mediator(EDOAL edoal) {
+	public Mediator(EDOALAlignment edoal) {
 		constructs = new ArrayList<Query>();
 		edoalAlignment = edoal;
-		id = "mediator_" + ++Mediator.nbOfMediators;
+		id = "mediator_" + ++Mediator.counter;
 	}
 	
 	/**
-	 * @param mediation the mediation to set
+	 * @param jenaAlignment the jenaAlignment to set
 	 */
-	public void setMediation(Alignment mediation) {
-		this.mediation = mediation;
+	public void setJenaAlignment(JenaAlignment ja) {
+		this.jenaAlignment = ja;
 	}
 
 	public boolean addAllConstruct(List<Query> c) {
@@ -122,7 +131,7 @@ public class Mediator {
 		try {
 			Op op = Algebra.compile(lhe);
 			EntityTranslationService ets = new EntityTranslationServiceImpl();
-			Transform translation = new EntityTranslation(ets, this.mediation);
+			Transform translation = new EntityTranslation(ets, this.jenaAlignment);
 			Op translated = Transformer.transform(translation, op);
 			rhe = ExtendedOpAsQuery.asQuery(translated);
 		} catch (Exception e) {
@@ -137,7 +146,7 @@ public class Mediator {
 	 * into the the right hand one.
 	 * 
 	 * Transformation by rewriteQuery was not yet implemented in the old
-	 * align.java that this mediation package currently makes use of.
+	 * align.java that this jenaAlignment package currently makes use of.
 	 * TODO upgrade to most recent Alignment API
 	 * 
 	 * @param filename
@@ -185,21 +194,56 @@ public class Mediator {
 	public String toString() {
 		return getId();
 	}
-
+	
+	/**
+	 * Show the jenaAlignment as RDF graph model
+	 * @param format, e.g., "Turtle"
+	 * @return A formatted string representing the RDF graph model
+	 */
+	public String asModel(String format) {
+		StringWriter w = new StringWriter();
+		Model model = ((JenaAlignment)jenaAlignment).getModel();
+		model.write(w, format);
+		return w.toString(); 
+	}
+	
+	/**
+	 * Get the EDOAL alignment as a set of axioms
+	 */
+	public String asAxioms() {
+		PrintWriter writer;
+		String s = null;
+		StringWriter stringWriter = new StringWriter();
+		try {
+			writer = new PrintWriter(stringWriter, true);
+			AlignmentVisitor renderer = new RDFRendererVisitor(writer);
+			((org.semanticweb.owl.align.Alignment) this.edoalAlignment).render(renderer);
+			//this.owlAlignment.render(renderer);
+			//this.mediation.render(renderer);
+			// TODO Apparently, this is not the way to operate a writer in order to produce strings
+			s += stringWriter.toString();
+			writer.flush();
+			writer.close();
+		} catch (AlignmentException e) {
+			log.log(Level.WARNING, "Couldn't render EDOAL alignment into axioms.", e);
+		}
+		return s;
+	}
+	
 	/**
 	 * Getters
 	 * @return EDOAL the edoal alignment that this mediator is working from
 	 */
-	public EDOAL getEdoalAlignment() {
+	public EDOALAlignment getEdoalAlignment() {
 		return this.edoalAlignment;
 	}
 	
 	/**
 	 * Getters
-	 * @return Mediation the mediation that this mediator is working with
+	 * @return Mediation the jenaAlignment that this mediator is working with
 	 */
-	public Alignment getMediation() {
-		return this.mediation;
+	public Alignment getJenaAlignment() {
+		return this.jenaAlignment;
 	}
 	
 	public String getId() {

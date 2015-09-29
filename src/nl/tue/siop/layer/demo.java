@@ -30,7 +30,7 @@ public class demo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String configFile = "./resources/nl/test5.json";
+		String configFile = "./resources/nl/test1.json";
 		String alignFileName;
 		String dataAFileName;
 		String dataBFileName;

@@ -4,8 +4,18 @@
 package nl.tue.siop.layer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,14 +25,18 @@ import org.semanticweb.owl.align.AlignmentException;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 
+import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
+import fr.inrialpes.exmo.align.parser.AlignmentParser;
 import uk.soton.service.mediation.Alignment;
 import uk.soton.service.mediation.EntityTranslationService;
 import uk.soton.service.mediation.EntityTranslationServiceImpl;
+import uk.soton.service.mediation.JenaAlignment;
 import uk.soton.service.mediation.algebra.EntityTranslation;
 import uk.soton.service.mediation.algebra.ExtendedOpAsQuery;
 import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
@@ -72,17 +86,25 @@ public class SAP {
 	public void addEDOALALignment(File edoalFile) throws UnsupportedOperationException, AlignmentException, IOException {
 		if (this.m != null) {
 			throw new UnsupportedOperationException(
-					"Not Supported Yet: Attempt to add another EDOAL alignment to existing mediator");
+					"Not Supported Yet: Cannot add another EDOAL alignment to existing mediator");
 		} else {
-			String edoalString = Utilities.readFile(edoalFile, StandardCharsets.UTF_8);
-			MediatorFactory mf = new MediatorFactory(edoalString);
-			//MediatorFactory mf = new MediatorFactory(edoalFile);
-			this.m = mf.createMediator();
+			AlignmentParser ap = new AlignmentParser(0);
+			ap.initAlignment(null);
+			EDOALAlignment ea = new EDOALAlignment();
+			try{
+				String s = new String(Files.readAllBytes(Paths.get(edoalFile.getAbsolutePath())));
+				ea = (EDOALAlignment) ap.parseString(s);
+			}catch(FileNotFoundException e){
+				log.log(Level.SEVERE, "Cannot find alignment file: " + edoalFile.getCanonicalPath(), e);
+			}catch (AlignmentException e1){
+				log.log(Level.SEVERE, "Cannot parse alignment file: " + edoalFile.getCanonicalPath(), e1);
+			} 
 			
-			Alignment mediation = m.getMediation();
+			this.m = new MediatorFactory().createMediator(ea);
 
 			// Add the CONSTRUCT queries
-			this.m.addAllConstruct(constructQuery(mediation));
+			Alignment ja = m.getJenaAlignment();
+			this.m.addAllConstruct(constructQuery(ja));
 		}
 	}
 
@@ -138,10 +160,9 @@ public class SAP {
 	 * Show the mediation rules that are currently applied. Use both the console
 	 * and the logger as output target.
 	 */
-
 	public void showMediation() {
-		String medString = this.m.toString();
-		log.log(Level.INFO, this.m.toString() + " mediates according to alignment: \n" + m.getEdoalAlignment().asAxioms());
+		log.log(Level.INFO, this.m.toString() + " mediates according to alignment: \n" + m.asAxioms());
+		log.log(Level.INFO, this.m.asModel("Turtle"));
 		return;
 	}
 }
