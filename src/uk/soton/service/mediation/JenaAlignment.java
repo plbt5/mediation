@@ -89,6 +89,9 @@ public class JenaAlignment implements Alignment {
 	/** The resolver table. */
 	private Hashtable<Node, Function> resolver;
 
+	/**
+	  * At class loading time the resolver is populated with well known functions instances.
+	 */
 	{
 		resolver = new Hashtable<Node, Function>();
 		resolver.put(Node.createURI(RDFVocabulary.SAMEAS), FunctionWrapper.$(new SameAs()));
@@ -372,7 +375,7 @@ public class JenaAlignment implements Alignment {
 		if (this.patterns != null) {
 			return this.patterns;
 		}
-		log.log(Level.INFO, "Model: " + this.inner);
+		// log.log(Level.INFO, "Model: " + this.inner);
 		Hashtable<Triple, List<Triple>> result = new Hashtable<Triple, List<Triple>>();
 		fdependencies = new Hashtable<Triple, Hashtable<Node, FunctionalDependency>>();
 		ResIterator ei = inner.listSubjectsWithProperty(getP(RDFVocabulary.RDF_TYPE),

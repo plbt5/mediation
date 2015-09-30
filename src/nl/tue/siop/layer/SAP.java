@@ -4,16 +4,8 @@
 package nl.tue.siop.layer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,24 +17,25 @@ import org.semanticweb.owl.align.AlignmentException;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
 
+import fr.inrialpes.exmo.align.impl.Annotations;
+import fr.inrialpes.exmo.align.impl.Namespace;
 import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.parser.AlignmentParser;
 import uk.soton.service.mediation.Alignment;
-import uk.soton.service.mediation.EntityTranslationService;
-import uk.soton.service.mediation.EntityTranslationServiceImpl;
-import uk.soton.service.mediation.JenaAlignment;
-import uk.soton.service.mediation.algebra.EntityTranslation;
-import uk.soton.service.mediation.algebra.ExtendedOpAsQuery;
 import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
 
 /**
- * @author brandtp
+ * The Service Access Point (SAP) represents the main point of access to the applications for access to 
+ * the semantic services that the SIOp layer provides. The SIOp layer makes use of an underlying communication stack 
+ * to exchange data between application peers. Based on an EDOAL alignment, the main service of the SIOp layer is
+ * to enable loose coupled semantic between the communicating peers. This means that each peer can exchange data in its
+ * native semantics; the SIOp layer provides for the required translation between semantic representations of each
+ * application. The translation of the data itself is being performed by the mediator, while the exchange of the data is performed 
+ * by the protocol handlers. The SAP provides for the generation and instantiation of the mediator.  
+ * 
+ * @author Paul Brandt <paul@brandt.name>
+ *
  *
  */
 public class SAP {
@@ -50,7 +43,8 @@ public class SAP {
 	private static final Logger log = Logger.getLogger(SAP.class.getName());
 
 	/**
-	 * Every SAP creates its own mediator and protocol components to work with
+	 * Every SAP creates its own mediator and protocol components to work with.
+	 * TODO SAP shouldn't contain a protocol, that should be left to the mediator
 	 */
 	private Mediator m;
 	private Protocol p;
@@ -61,6 +55,14 @@ public class SAP {
 	 */
 	public Protocol getP() {
 		return p;
+	}
+	
+	/** 
+	 * @return the mediator this SAP is working with
+	 * 
+	 */
+	public Mediator getMediator() {
+		return m;
 	}
 
 	public SAP() {
@@ -76,17 +78,21 @@ public class SAP {
 	 * Create a new mediator that will translate according to the EDOAL
 	 * alignment
 	 * 
-	 * @param file
+	 * @param File
 	 *            the file that carries the EDOAL alignment TODO pass an EDOAL
 	 *            object as opposed to a file that needs to be read first TODO
 	 *            the mediator should be able to handle more than one EDOAL
 	 *            alignment
-	 * @throws IOException 
+	 * @throws IOException when files do not exist or are inaccessible
+	 * @throws UnsupportedOperationException when attempt is made to add more than one EDOAL alignment
+	 * @throws AlignmentException 
 	 */
-	public void addEDOALALignment(File edoalFile) throws UnsupportedOperationException, AlignmentException, IOException {
+	public void addEDOALALignment(File edoalFile) throws UnsupportedOperationException, IOException {
 		if (this.m != null) {
 			throw new UnsupportedOperationException(
 					"Not Supported Yet: Cannot add another EDOAL alignment to existing mediator");
+		} else if (edoalFile == (File)null) {
+			throw new IOException("Alignment file does not exist");
 		} else {
 			AlignmentParser ap = new AlignmentParser(0);
 			ap.initAlignment(null);
@@ -94,13 +100,18 @@ public class SAP {
 			try{
 				String s = new String(Files.readAllBytes(Paths.get(edoalFile.getAbsolutePath())));
 				ea = (EDOALAlignment) ap.parseString(s);
-			}catch(FileNotFoundException e){
+			}catch(IOException e){
 				log.log(Level.SEVERE, "Cannot find alignment file: " + edoalFile.getCanonicalPath(), e);
 			}catch (AlignmentException e1){
 				log.log(Level.SEVERE, "Cannot parse alignment file: " + edoalFile.getCanonicalPath(), e1);
 			} 
-			
-			this.m = new MediatorFactory().createMediator(ea);
+						
+			try {
+				this.m = new MediatorFactory().createMediator(ea);
+			} catch (NullPointerException e) {
+				log.log(Level.SEVERE, "Cannot create mediator from: " + ea.getExtension(Namespace.ALIGNMENT.uri, Annotations.ID), e);
+				e.printStackTrace();
+			}
 
 			// Add the CONSTRUCT queries
 			Alignment ja = m.getJenaAlignment();

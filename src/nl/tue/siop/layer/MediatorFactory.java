@@ -65,7 +65,14 @@ import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
  * The Class MediatorFactory generates Mediators. 
  *
  * The MediatorFactory Class provides the following features:<br/>
- * // TODO wat zijn die features dan?
+ * (i) Creating a mediator from an EDOAL alignment; (ii) generating a corresponding Jena alignment from it   
+ * 
+ * TODO: Support multiple data languages for a single alignment
+ * 		Mediations are also dependent on the language that represents the ontology data. We assume 
+ * 		RDF pattern rewriting rules for this moment. On extension to other languages, multiple mediations will emerge, hence 
+ * 		Class uk.soton.service.mediation.Alignment need to become overloaded with other constructions to host
+ * 		other type of rewriting rules. An even better solution would be to abstract the different types of 
+ * 		Alignments away in a Mediation Class.
  * 
  * @author Paul Brandt <paul@brandt.name>
  *
@@ -73,40 +80,7 @@ import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
 public class MediatorFactory {
 
 	private static final Logger log = Logger.getLogger( MediatorFactory.class.getName() );
-	/**
-	 * A MediatorFactory is the result of an alignment. This is the EDOAL alignment that it originates from.
-	 */	
-	//private EDOAL edoal = null;
-//	
-//	EDOAL getEdoal() {
-//		return this.edoal;
-//	}
 	
-	/**
-	 * The mediators that this factory manages
-	 */
-//	private static List<Mediator> mediators = new ArrayList<Mediator>();
-
-	/**
-	 * An mediator transforms data between two ontologies. Those tranformations are specified by this mediation
-	 * that is generated from the EDOAL alignment between the ontologies. 
-	 * TODO: Support multiple data languages for a single alignment
-	 * 		Mediations are also dependent on the language that represents the ontology data. We assume 
-	 * 		RDF pattern rewriting rules. On extension to other languages, multiple mediations will emerge, hence 
-	 * 		Class uk.soton.service.mediation.Alignment need to become overloaded with other constructions to host
-	 * 		other type of rewriting rules. An even better solution would be to abstract the different types of 
-	 * 		Alignments away in a Mediation Class.
-	 */	
-//	private Alignment mediation = null;
-	
-	/**
-	 * At least for printing purposes it is handy to have available a jena RDF model   
-	 */
-//	private Model RDFmodel = null;
-	
-	//private org.semanticweb.owl.align.Alignment al = null;
-	
-
 	/**
 	 * The MediatorFactory class creates a mediator, specifically tailored to the alignment
 	 * of choice. 
@@ -161,42 +135,5 @@ public class MediatorFactory {
 		return alignment;
 	}
 	
-	/**
-	 * @return the mediation
-	 */
-//	public Alignment getMediation() {
-//		return this.mediation;
-//	}
-
-	/**
-	 * @return the printable format of the mediation
-	 */
-//	public String toString() {
-//		this.RDFmodel = ((JenaAlignment)this.mediation).getModel();
-//		String syntax = "N-TRIPLE";
-//		StringWriter rdf = new StringWriter();
-//		RDFmodel.write(rdf, syntax);
-//		
-//		String s = "Mediation:\n";
-//		Hashtable<Triple, List<Triple>> p = this.mediation.getPatterns();
-//
-///*		Enumeration <Triple>ek = p.keys();
-//		Enumeration <List<Triple>>ee = p.elements();
-//		while (ek.hasMoreElements()) {
-//			s = s + "Key: "+ ek.nextElement().toString() + "\n";
-//			s = s + "Elt: "+ ee.nextElement().toString() + "\n";
-//		}*/
-//		
-//		System.out.println("s:\n" + s);
-//		System.out.println("Full map:\n");
-//		System.out.println(p);
-//		
-//		System.out.println("\nAs OWL axioms:\n");
-//		s = s + "\nEDOAL Alignment:\n" + this.edoal.toString();
-//		
-//		//s = s + "rdf:\n" + rdf.toString() + "\n === \n";
-//		return s;
-//		//return s.concat(this.edoal.toString());
-//	}
 
 }

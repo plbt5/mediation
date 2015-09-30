@@ -30,9 +30,12 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
 
+import fr.inrialpes.exmo.align.impl.Annotations;
 import fr.inrialpes.exmo.align.impl.BasicAlignment;
+import fr.inrialpes.exmo.align.impl.Namespace;
 import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.impl.renderer.RDFRendererVisitor;
+import sun.misc.Regexp;
 import uk.soton.service.mediation.Alignment;
 import uk.soton.service.mediation.EntityTranslationService;
 import uk.soton.service.mediation.EntityTranslationServiceImpl;
@@ -61,10 +64,10 @@ public class Mediator {
 	private JenaAlignment jenaAlignment = null;
 	
 	/**
-	 * Generate a unique name for each mediator.
+	 * Generate a unique id for each mediator, based on the edoalIRI.
 	 */
 	static private int counter = 0;
-	private String id;
+	private String edoalIRI, id;
 	
 	/**
 	 * At least for printing purposes it is handy to have available a jena RDF model   
@@ -98,9 +101,15 @@ public class Mediator {
 	 * queue
 	 */
 	public Mediator(EDOALAlignment edoal) {
-		constructs = new ArrayList<Query>();
-		edoalAlignment = edoal;
-		id = "mediator_" + ++Mediator.counter;
+		if (edoal == (EDOALAlignment)null) {
+			throw new NullPointerException("Cannot create mediator without edoal alignment");
+		} else {
+			constructs = new ArrayList<Query>();
+			edoalAlignment = edoal;
+			edoalIRI = edoal.getExtension(Namespace.ALIGNMENT.uri, Annotations.ID);
+			// TODO perform a regex to select only the 'onto1 dash onto2' part of the IRI 
+			id = edoalIRI + "_mediator" + ++Mediator.counter;
+		}
 	}
 	
 	/**
@@ -163,28 +172,20 @@ public class Mediator {
 		//BasicAlignment al = (BasicAlignment) this.mediation;
 		//Properties parameters = new Properties();
 		//
-		// Transformation by rewriteQuery was not yet implemented in the old
-		// align.java that this
-		// mediati0on package currently makes use of.
+		// Transformation by method rewriteQuery was not yet implemented in the old
+		// align.java that this mediation package currently makes use of.
 		// TODO upgrade to most recent Alignment API
 		//
 		// transformedQuery = al.rewriteQuery( queryString, parameters );
 
 		// Translate by reading file and transforming string into query, then translate(query)
-		
-		if (file.exists() && !file.isDirectory()) {
-			InputStream in = new FileInputStream(file);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			String line = null;
-			String queryString = "";
-			while ((line = reader.readLine()) != null) {
-				queryString += line + "\n";
-			}
-			reader.close();
-			transformedQuery = translate(QueryFactory.create(queryString));
-		} else {
-			throw new FileNotFoundException("Query file does not exist: " + file.toString());
+		try {
+			transformedQuery = translate(readFile(file));
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, "Query file does not exist", e);
+			e.printStackTrace();
 		}
+		
 		return transformedQuery;
 	}
 
@@ -218,9 +219,6 @@ public class Mediator {
 			writer = new PrintWriter(stringWriter, true);
 			AlignmentVisitor renderer = new RDFRendererVisitor(writer);
 			((org.semanticweb.owl.align.Alignment) this.edoalAlignment).render(renderer);
-			//this.owlAlignment.render(renderer);
-			//this.mediation.render(renderer);
-			// TODO Apparently, this is not the way to operate a writer in order to produce strings
 			s += stringWriter.toString();
 			writer.flush();
 			writer.close();
@@ -228,6 +226,14 @@ public class Mediator {
 			log.log(Level.WARNING, "Couldn't render EDOAL alignment into axioms.", e);
 		}
 		return s;
+	}
+	
+	/**
+	 * getEdoalId
+	 * @return String the <id> field from the EDOAL alignment 
+	 */
+	public String getEdoalId() {
+		return this.edoalIRI;
 	}
 	
 	/**
@@ -249,4 +255,21 @@ public class Mediator {
 	public String getId() {
 		return this.id;
 	}
+	
+	public Query readFile(File f) throws IOException, FileNotFoundException {
+		if (f.exists() && !f.isDirectory()) {
+			InputStream in = new FileInputStream(f);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			String line = null;
+			String queryString = "";
+			while ((line = reader.readLine()) != null) {
+				queryString += line + "\n";
+			}
+			reader.close();
+			return QueryFactory.create(queryString);
+		} else {
+			throw new FileNotFoundException("Query file does not exist: " + f.toString());
+		}
+	}
+
 }

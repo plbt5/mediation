@@ -43,138 +43,180 @@ import fr.inrialpes.exmo.align.impl.edoal.PathExpression;
 import fr.inrialpes.exmo.align.impl.edoal.Transformation;
 
 /**
- * The Class EDOALMediator is a utility class that generate internal triples patterns from an EDOAL alignment.
+ * The Class EDOALMediator is a utility class that generate internal triples
+ * patterns from an EDOAL alignment.
+ * 
  * @author Gianluca Correndo <gc3@ecs.soton.ac.uk>
  */
 public class EDOALMediator {
 
-  private static Logger log = Logger.getLogger(EDOALMediator.class.getName());
-  
+	private static Logger log = Logger.getLogger(EDOALMediator.class.getName());
 
-  /**
-   * Mediate an EDOAL alignment into an internal alignment based on RDF pattern rewriting rules.
-   *
-   * @param a the EDOAL alignment to mediate
-   * @return the mediated alignment expressed as BGP rewriting rules
-   * @throws AlignmentException the alignment exception
-   */
-  public static Alignment mediate(org.semanticweb.owl.align.Alignment a) throws AlignmentException {
-    JenaAlignment forth = new JenaAlignment();
-    JenaAlignment back = new JenaAlignment();
-    List<String> source = new ArrayList<String>();
-    source.add(a.getOntology1URI().toString());
-    List<String> target = new ArrayList<String>();
-    target.add(a.getOntology2URI().toString());
+	/**
+	 * Mediate an EDOAL alignment into an internal alignment based on RDF
+	 * pattern rewriting rules.
+	 *
+	 * @param a
+	 *            the EDOAL alignment to mediate
+	 * @return the mediated alignment expressed as BGP rewriting rules
+	 * @throws AlignmentException
+	 *             the alignment exception
+	 */
+	public static Alignment mediate(org.semanticweb.owl.align.Alignment a) throws AlignmentException {
+		JenaAlignment forth = new JenaAlignment();
+		JenaAlignment back = new JenaAlignment();
+		List<String> source = new ArrayList<String>();
+		source.add(a.getOntology1URI().toString());
+		List<String> target = new ArrayList<String>();
+		target.add(a.getOntology2URI().toString());
 
-    forth.setSourceOntologyURIs(source);
-    forth.setTargetOntologyURIs(target);
-    back.setSourceOntologyURIs(target);
-    back.setTargetOntologyURIs(source);
+		forth.setSourceOntologyURIs(source);
+		forth.setTargetOntologyURIs(target);
+		back.setSourceOntologyURIs(target);
+		back.setTargetOntologyURIs(source);
 
-    for (Cell cell : a) {
-      mediate(cell, forth, back);
-    }
-    Alignment result = JenaAlignment.merge(back, forth);
-    return result;
-  }
+		for (Cell cell : a) {
+			mediate(cell, forth, back);
+		}
+		Alignment result = JenaAlignment.merge(back, forth);
+		return result;
+	}
 
-  /**
-   * Mediate method that translate an EDOAL alignment cell into an internal alignment based on rewriting rules.
-   *
-   * @param cell the EDOAL alignment cell
-   * @param forth the forward alignment to populate (source->target)
-   * @param back the backward alignment to populate (target->source)
- * @throws AlignmentException 
-   */
-  public static void mediate(Cell cell, Alignment forth, Alignment back) throws AlignmentException {
-	EDOALCell ecell = (EDOALCell)cell;
-    Object from = cell.getObject1();
-    Object to = cell.getObject2();
-    final MediationResult altfrom, altto;
-    altfrom = mediateExpression((Expression) from);
-    altto = mediateExpression((Expression) to);
-    mediateTransform(ecell.transformations() , forth , back);
-    	altto.getPatterns().replace(altto.getS(), altfrom.getS());
-    altto.getPatterns().replace(altto.getO(), altfrom.getO());
-    if (altfrom.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence") || cell.getRelation().getRelation().equals("<")|| cell.getRelation().getRelation().equals("="))) {
-      forth.addRewritingRule(new RewritingRule() {{
-          setLHS(altfrom.getPatterns().get(0).asTriple());
-          setRHS(altto.getPatterns().asTripleList());
-          setFD(altfrom.getFD());
-        }});
-    }
-    if (altto.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence") || cell.getRelation().getRelation().equals("<")|| cell.getRelation().getRelation().equals("="))) {
-      back.addRewritingRule(new RewritingRule() {{
-          setLHS(altto.getPatterns().get(0).asTriple());
-          setRHS(altfrom.getPatterns().asTripleList());
-          setFD(altfrom.getFD());
-        }});
-    }
-  }
+	/**
+	 * Mediate method that translate an EDOAL alignment cell into an internal
+	 * alignment based on rewriting rules.
+	 *
+	 * @param cell
+	 *            the EDOAL alignment cell
+	 * @param forth
+	 *            the forward alignment to populate (source->target)
+	 * @param back
+	 *            the backward alignment to populate (target->source)
+	 * @throws AlignmentException
+	 */
+	public static void mediate(Cell cell, Alignment forth, Alignment back) throws AlignmentException {
+		EDOALCell ecell = (EDOALCell) cell;
+		Object from = cell.getObject1();
+		Object to = cell.getObject2();
+		// Unravel every element of the source (from) and target (to) parts of
+		// the cell into an atomic RDF defined triple specification
+		final MediationResult altfrom, altto;
+		altfrom = mediateExpression((Expression) from);
+		altto = mediateExpression((Expression) to);
+		// Unravel every element of the transformation part of the cell into an
+		// atomic RDF defined triple specification
+		mediateTransform(ecell.transformations(), forth, back);
 
-  /**
-   * Gets the mediated result for a ClassExpression construct.
-   *
-   * @param ce the ClassExpression
-   * @return the mediated result
-   * @throws AlignmentException 
-   */
-  private static MediationResult getClassExpression(final ClassExpression ce) throws AlignmentException {
-    final Node v = Utility.getNewVar();
-    ClassVisitor cv = ClassVisitor.$().setS(v);
-    cv.visit(ce);
-    return cv.getMediationResult().setS(v);
-  }
+		altto.getPatterns().replace(altto.getS(), altfrom.getS());
+		altto.getPatterns().replace(altto.getO(), altfrom.getO());
+		// PB: inserted code for more explicit logging on unknown or non-supported alignment relations
+//		if ( !( cell.getRelation().getRelation().equals("Equivalence") ||
+//			    cell.getRelation().getRelation().equals("<") || 
+//			    cell.getRelation().getRelation().equals("=")
+//			  ) ) {
+//			log.log(Level.WARNING, "Cannot generate rewriting rule for alignment relation " + cell.getRelation().getRelation().toString() + ". Aborting this cell");
+//			throw new AlignmentException("Illegal alignment relation: " + cell.getRelation().getRelation().toString());
+//		}
+		
+		// PB: reduced code since check on alignment relations isn't necessary here anymore
+		if (altfrom.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
+				|| cell.getRelation().getRelation().equals("<") || cell.getRelation().getRelation().equals("="))) {
+//		if (altfrom.getPatterns().size() == 1) {
+			forth.addRewritingRule(new RewritingRule() {
+				{
+					setLHS(altfrom.getPatterns().get(0).asTriple());
+					setRHS(altto.getPatterns().asTripleList());
+					setFD(altfrom.getFD());
+				}
+			});
+		} else {	// PB: added else part for more explicit logging on restrictions
+			log.log(Level.INFO, "Cannot generate forward rewriting rule from multiple LHS entities. Found " + altfrom.getPatterns().size() + " patterns");
+		}
 
-  
+		// PB: reduced code since check on alignment relations isn't necessary here anymore
+		if (altto.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
+				|| cell.getRelation().getRelation().equals("<") || cell.getRelation().getRelation().equals("="))) {
+//		if (altto.getPatterns().size() == 1) {
+			back.addRewritingRule(new RewritingRule() {
+				{
+					setLHS(altto.getPatterns().get(0).asTriple());
+					setRHS(altfrom.getPatterns().asTripleList());
+					setFD(altfrom.getFD());
+				}
+			});
+		} else {	// PB: added else part for more explicit logging on restrictions
+			log.log(Level.INFO, "Cannot generate backwards rewriting rule from multiple RHS entities. Found " + altto.getPatterns().size() + " patterns");
+		}
+	}
 
-  /**
-   * Gets the mediated result for a PathExpression construct.
-   *
-   * @param e the PathExpression instance
-   * @return the mediation result
-   * @throws AlignmentException 
-   */
-  private static MediationResult getPathExpression(final PathExpression e) throws AlignmentException {
-    final Node o = Utility.getNewVar();
-    final Node s = Utility.getNewVar();
-    PropertyVisitor pv = PropertyVisitor.$().setS(s).setO(o);
-    pv.visit(e);
-    return pv.getMediationResult().setS(s).setO(o);
-  }
-  
-  
-  /**
-   * Gets the mediated result for a class expression construct.
-   *
-   * @param e the Expression
-   * @return the mediation result
- * @throws AlignmentException 
-   */
-  private static MediationResult mediateExpression(Expression e) throws AlignmentException {
-    if (e instanceof ClassExpression) {
-      return getClassExpression((ClassExpression) e);
-    } else if (e instanceof PathExpression) {
-      return getPathExpression((PathExpression) e);
-    } else {
-      log.log(Level.WARNING, String.format("mediateExpression: Expression %s not recognised", e.toString()));
-      return new MediationResult() {{ setPatterns(new STripleList()); }};
-    }
-  }
+	/**
+	 * Gets the mediated result for a ClassExpression construct.
+	 *
+	 * @param ce
+	 *            the ClassExpression
+	 * @return the mediated result
+	 * @throws AlignmentException
+	 */
+	private static MediationResult getClassExpression(final ClassExpression ce) throws AlignmentException {
+		final Node v = Utility.getNewVar();
+		ClassVisitor cv = ClassVisitor.$().setS(v);
+		cv.visit(ce);
+		return cv.getMediationResult().setS(v);
+	}
 
-  private static void mediateTransform(Set<Transformation> ts, Alignment forth, Alignment back) throws AlignmentException{
-	  if (ts != null) {
-		  for (Transformation t : ts) {
-			  TransformationVisitor tv = TransformationVisitor.$();
-			  tv.visit(t);
-			  if (tv.getRewritingRule() == null)
-				  break;
-			  if (tv.isForward()){ 
-				  forth.addRewritingRule(tv.getRewritingRule());
-			  } else {
-				  back.addRewritingRule(tv.getRewritingRule());
-			  }
-		  }
-	  }
-  }
+	/**
+	 * Gets the mediated result for a PathExpression construct.
+	 *
+	 * @param e
+	 *            the PathExpression instance
+	 * @return the mediation result
+	 * @throws AlignmentException
+	 */
+	private static MediationResult getPathExpression(final PathExpression e) throws AlignmentException {
+		final Node o = Utility.getNewVar();
+		final Node s = Utility.getNewVar();
+		PropertyVisitor pv = PropertyVisitor.$().setS(s).setO(o);
+		pv.visit(e);
+		return pv.getMediationResult().setS(s).setO(o);
+	}
+
+	/**
+	 * Gets the mediated result for a class expression construct.
+	 *
+	 * @param e
+	 *            the Expression
+	 * @return the mediation result
+	 * @throws AlignmentException
+	 */
+	private static MediationResult mediateExpression(Expression e) throws AlignmentException {
+		if (e instanceof ClassExpression) {
+			return getClassExpression((ClassExpression) e);
+		} else if (e instanceof PathExpression) {
+			return getPathExpression((PathExpression) e);
+		} else {
+			log.log(Level.WARNING, String.format("mediateExpression: Expression %s not recognised", e.toString()));
+			return new MediationResult() {
+				{
+					setPatterns(new STripleList());
+				}
+			};
+		}
+	}
+
+	private static void mediateTransform(Set<Transformation> ts, Alignment forth, Alignment back)
+			throws AlignmentException {
+		if (ts != null) {
+			for (Transformation t : ts) {
+				TransformationVisitor tv = TransformationVisitor.$();
+				tv.visit(t);
+				if (tv.getRewritingRule() == null)
+					break;
+				if (tv.isForward()) {
+					forth.addRewritingRule(tv.getRewritingRule());
+				} else {
+					back.addRewritingRule(tv.getRewritingRule());
+				}
+			}
+		}
+	}
 }
