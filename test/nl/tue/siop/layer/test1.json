@@ -1,5 +1,0 @@
-{
-	"align": "resources/nl/test1/eqAlign.xml"
-	"dataTo": "resources/nl/test1/dataA.sparql"
-	"dataFrom": "resources/nl/test1/dataB.sparql"
-}

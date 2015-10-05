@@ -119,8 +119,14 @@ public class Mediator {
 		this.jenaAlignment = ja;
 	}
 
-	public boolean addAllConstruct(List<Query> c) {
-		return constructs.addAll(c);
+	/**
+	 * Setter for Construct queries 
+	 * @return Boolean - success or failure of setter operation
+	 */
+	public Boolean setConstructs() {
+		if (jenaAlignment == null) {
+			return false;
+		} else return createConstructQueries(jenaAlignment);
 	}
 
 	/**
@@ -190,7 +196,18 @@ public class Mediator {
 	}
 
 	/**
-	 * 
+	 * Create SPARQL CONSTRUCT queries based on an EDOAL alignment, in order to import external data  
+	 * and add them to the mediator.
+	 */
+	private boolean createConstructQueries(Alignment patterns) {
+		List<Query> c = EDOALQueryGenerator.generateQueriesFromAlignment(patterns);
+		return constructs.addAll(c);
+	}
+
+	
+	/**
+	 * Return the name of this mediator
+	 * @return String - the name of this mediator
 	 */
 	public String toString() {
 		return getId();

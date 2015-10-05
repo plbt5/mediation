@@ -6,6 +6,7 @@ package nl.tue.siop.layer;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,6 +25,15 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.semanticweb.owl.align.AlignmentException;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+
+import uk.soton.service.mediation.JenaAlignment;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,29 +44,34 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class SAPTest {
-	private File inputFile;
-	private Boolean expectedResult;
-	
+	private String hasRelationProp = "http://ecs.soton.ac.uk/om.owl#hasRelation";
+	private File fIn;
+	private File fER;
 	private SAP sap;
 	private File alF = null, toF = null, fmF = null;
+	private String edoalIRI = null, sourceOntIRI = null, targetOntIRI = null, alRelation = null;
+	private Integer totalPatterns = new Integer(0);
+	private Resource testResource = (Resource) null;
+	private Model testModel = ModelFactory.createDefaultModel();
+	private String relationURI = null;
 	/**
 	 * @throws java.lang.Exception
 	 */
 //	@Before
 //	public void setUp() throws Exception {
 //		sap = new SAP();
-//		setConfig(inputFile);
+//		setConfig(fIn);
 //	}
 
-	private void setConfig(File f) {
+	private void setConfig() {
 		JSONParser parser = new JSONParser();
 		// read the json file
-		if (f.exists() && !f.isDirectory()) {
+		if (this.fIn.exists() && !fIn.isDirectory()) {
 			Object obj = null;
 			try {
-				obj = parser.parse(new FileReader(f));
+				obj = parser.parse(new FileReader(fIn));
 			} catch (IOException | ParseException e) {
-				fail("Cannot read test configuration file: " + f.getAbsolutePath());
+				fail("Cannot read test configuration file: " + fIn.getAbsolutePath() + "\n" + e);
 			}
 			JSONObject jsonObject = (JSONObject) obj;
 
@@ -67,10 +82,10 @@ public class SAPTest {
 				toF = new File((String) jsonObject.get("dataTo"));
 				fmF = new File((String) jsonObject.get("dataFrom"));
 			} catch (NullPointerException e) {
-				fail("Cannot open all configuration files from " + f.getAbsolutePath());
+				fail("Cannot open all configuration files from " + fIn.getAbsolutePath() + "\n" + e);
 			}
 		} else {
-			fail("Test configuration file does not exist: " + f.getAbsolutePath());
+			fail("Test configuration file does not exist: " + fIn.getAbsolutePath());
 		}
 		if (!alF.exists() || alF.isDirectory()) {
 			fail("Cannot open alignment file " + alF.getAbsolutePath());
@@ -80,6 +95,62 @@ public class SAPTest {
 		}
 		if (!fmF.exists() || fmF.isDirectory()) {
 			fail("Cannot open dataFrom file " + fmF.getAbsolutePath());
+		}
+		
+		// read the json file
+		if (fER.exists() && !fER.isDirectory()) {
+			Object obj = null;
+			try {
+				obj = parser.parse(new FileReader(fER));
+			} catch (FileNotFoundException e) {
+				fail("Cannot find test configuration file: " + fER.getAbsolutePath() + "\n" + e);
+			} catch (ParseException e) {
+				fail("Cannot parse test configuration file: " + fER.getAbsolutePath() + "\n" + e);
+			} catch (IOException e) {
+				fail("Cannot read test configuration file: " + fER.getAbsolutePath() + "\n" + e);
+			}
+			JSONObject jsonObject = (JSONObject) obj;
+
+			// get a String from the JSON object
+			
+			try {
+				edoalIRI = (String) jsonObject.get("edoalIRI");
+				sourceOntIRI = (String) jsonObject.get("sourceOntIRI");
+				targetOntIRI = (String) jsonObject.get("targetOntIRI");
+				totalPatterns = Integer.parseInt(jsonObject.get("totalPatterns").toString());
+				switch ((String) jsonObject.get("alRelation")) {
+				case "=": // Equivalence
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#EQ");
+					break;
+				case "%": // Non equivalence
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#NEQ");
+					break;
+				case "<": // SubsumedBy
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#LT");
+					break;
+				case ">": // Subsumes
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#GT");
+					break;
+				case "~>": // Non transitive implication
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#NTI");
+					break;
+				case "InstanceOf":
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#IO");
+					break;
+				case "HasInstance":
+					testResource = testModel.createResource("http://ecs.soton.ac.uk/om.owl#HI");
+					break;
+				default:
+					fail("Cannot get alRelation from " + fER.getAbsolutePath());
+					break;
+				}
+			} catch (NullPointerException e) {
+				fail("Cannot read expected results from " + fER.getAbsolutePath() + "\n" + e);
+			} catch(NumberFormatException e) {
+				fail("Cannot get totalPatterns from expected results pattern: should be \"5\"" + "\n" + e);
+			}
+		} else {
+			fail("Test expected results file does not exist: " + fER.getAbsolutePath());
 		}
 	}
 
@@ -91,11 +162,11 @@ public class SAPTest {
 	 * with '@Parameters'.
 	 * TODO Rework this to see if and how the expectedResults can play a role. 
 	 */
-	public SAPTest (String f, Boolean b) {
-		this.inputFile = new File(f);
-		this.expectedResult = b;
+	public SAPTest (String fIn, String fER) {
+		this.fIn = new File(fIn);
+		this.fER = new File(fER);
 		sap = new SAP();
-		setConfig(inputFile);
+		setConfig();
 	}
 	
 	/**
@@ -107,9 +178,10 @@ public class SAPTest {
 	 * @return
 	 */
 	@Parameters
-	public static Collection<Object[]> dataFiles() {
-		return Arrays.asList(new Object[][] { 
-			{ "./test/nl/tue/siop/layer/test1.json", true } 
+	public static Collection<String[]> dataFiles() {
+		return Arrays.asList(new String[][] { 
+			{ "./resources/nl/test1.json", "./resources/nl/test1ExpectedResults.json" }, 
+			{ "./resources/nl/test2.json", "./resources/nl/test2ExpectedResults.json" } 
 		});
 	}
 
@@ -149,7 +221,7 @@ public class SAPTest {
 	@Test
 	public void testAssertCreatedMediatorAddEDOALALignment() throws Exception {
 		this.sap.addEDOALALignment(alF);
-		assertThat("EDAOL alignment has been parsed", this.sap.getMediator().getEdoalId(), is("http://oms.omwg.org/ontoA-ontoB/")); 
+		assertThat("EDAOL alignment has been parsed", this.sap.getMediator().getEdoalId(), containsString(edoalIRI)); 
 	}
 
 	/**
@@ -158,9 +230,15 @@ public class SAPTest {
 	@Test
 	public void testAssertCreatedJenaAddEDOALALignment() throws Exception {
 		this.sap.addEDOALALignment(alF);
-		assertThat("Jena alignment has correct source ontology", this.sap.getMediator().getJenaAlignment().getSourceOntologyURIs().iterator().next(), is("http://tutorial.topbraid.com/ontoA#"));
-		assertThat("Jena alignment has correct target ontology", this.sap.getMediator().getJenaAlignment().getTargetOntologyURIs().iterator().next(), is("http://tutorial.topbraid.com/ontoB#"));
-		assertTrue("Jena alignment has more than 0 match patterns", this.sap.getMediator().getJenaAlignment().getPatterns().size() > 0);
+		assertThat("Jena alignment fails on source ontology", this.sap.getMediator().getJenaAlignment().getSourceOntologyURIs().iterator().next(), is(sourceOntIRI));
+		assertThat("Jena alignment fails on target ontology", this.sap.getMediator().getJenaAlignment().getTargetOntologyURIs().iterator().next(), is(targetOntIRI));
+		assertThat("Jena alignment fails to match correct number of patterns", this.sap.getMediator().getJenaAlignment().getPatterns().size(),  is(totalPatterns));
+		Property prop = ((JenaAlignment)this.sap.getMediator().getJenaAlignment()).getModel().getProperty(hasRelationProp);
+		ResIterator ri = ((JenaAlignment)this.sap.getMediator().getJenaAlignment()).getModel().listSubjectsWithProperty(prop);
+		assertTrue("Jena alignment fails: no hasRelation", ri.hasNext());
+	    while (ri.hasNext()) {
+	    	assertThat("Jena alignment fails on alignment relation", ri.nextResource().getProperty(prop).getResource(), is(testResource));
+	    }
 	}
 
 }

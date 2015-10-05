@@ -1,5 +1,5 @@
 {
 	"align": "resources/nl/test4/alignment.xml"
-	"dataA": "resources/nl/test4/EDOALexquery.sparql"
-	"dataB": ""
+	"dataTo": "resources/nl/test4/EDOALexquery.sparql"
+	"dataFrom": ""
 }

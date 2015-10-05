@@ -1,5 +1,5 @@
 {
 	"align": "resources/nl/test5/disjointSubsetAlign.xml"
-	"dataA": "resources/nl/test5/dataA.sparql"
-	"dataB": "resources/nl/test5/dataB.sparql"
+	"dataTo": "resources/nl/test5/dataA.sparql"
+	"dataFrom": "resources/nl/test5/dataB.sparql"
 }

@@ -60,5 +60,65 @@
 				<relation>Equivalence</relation>
 			</Cell>
 		</map>
+		<map>
+			<Cell rdf:about="MappingRule_1">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;OneEq" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>=</relation>
+			</Cell>
+		</map>
+		<map>
+			<Cell rdf:about="MappingRule_2">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;OneEq" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>></relation>
+			</Cell>
+		</map>
+		<map>
+			<Cell rdf:about="MappingRule_3">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;OneEq" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>>=</relation>
+			</Cell>
+		</map>
+		<map>
+			<Cell rdf:about="MappingRule_4">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;OneEq" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>&lt;</relation>
+			</Cell>
+		</map>
+		<map>
+			<Cell rdf:about="MappingRule_5">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;OneEq" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>&lt;=</relation>
+			</Cell>
+		</map>
 	</Alignment>
 </rdf:RDF>

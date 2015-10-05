@@ -217,6 +217,8 @@ public class PropertyVisitor implements EDOALVisitor, MediationResultGenerator{
 	 * @param cpe a Collection of PathExpression instances to visit
 	 * @throws AlignmentException
 	 * 
+	 * TODO PB: similarly, a patternORVisit method needs to be implemented
+	 * 
 	 */
 	private void patternAndVisit(Collection<PathExpression> cpe) throws AlignmentException {
 		Node cs = getNode(this.s);

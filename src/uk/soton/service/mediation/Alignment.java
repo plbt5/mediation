@@ -34,12 +34,23 @@ public interface Alignment {
 	
 	/**
 	 * The Enum Relation encodes the different kind of alignments.
+	 * PB: Added relations that are defined by the EDOAL standards (http://alignapi.gforge.inria.fr/format.html).
+	 * According to source code, these live in the namespace <http://ecs.soton.ac.uk/om.owl#>, e.g., "http://ecs.soton.ac.uk/om.owl#NEQ"
+	 * 
 	 */
-	public enum Relation {/** The EQuivalence relation. */
-EQ};
+	public enum Relation {
+		EQ,		// EQuivalence relation ("=")
+		NEQ,	// Non equivalence relation ("%")
+		LT,		// Subsumed by ("<")
+		GT,		// Subsumes (">")
+		NTI,	// Non-transitive implication ("~>") :: this one is as of yet only defined in the Alignment API source code (fr.inrialpes.exmo.align.impl.rel)
+		IO,		// Instance of ("InstanceOf")
+		HI		// Has instance ("HasInstance")
+		};
 	
 	/**
 	 * Gets the rewriting patterns in an Hashtable, the key is the Left Hand Side triple.
+	 * TODO (PB) Currently, key is simple expression, i.e., a single triple. Keys should also facilitate complex expressions
 	 *
 	 * @return an Hashtable with all the patterns contained in the alignment.
 	 */

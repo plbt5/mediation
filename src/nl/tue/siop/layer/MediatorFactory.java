@@ -109,6 +109,8 @@ public class MediatorFactory {
 		}
 		if (m.getJenaAlignment() == null) {
 			throw new NullPointerException("Couldn't generate mediation");
+		} else if (!m.setConstructs()) {
+			log.log(Level.WARNING, "Couldn't generate CONSTRUCT queries from alignment");
 		}
 //		MediatorFactory.mediators.add(m);
 		return m;
@@ -135,5 +137,4 @@ public class MediatorFactory {
 		return alignment;
 	}
 	
-
 }

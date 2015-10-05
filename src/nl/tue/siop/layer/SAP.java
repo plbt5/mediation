@@ -3,6 +3,9 @@
  */
 package nl.tue.siop.layer;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,12 +20,21 @@ import org.semanticweb.owl.align.AlignmentException;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Selector;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import fr.inrialpes.exmo.align.impl.Annotations;
 import fr.inrialpes.exmo.align.impl.Namespace;
 import fr.inrialpes.exmo.align.impl.edoal.EDOALAlignment;
 import fr.inrialpes.exmo.align.parser.AlignmentParser;
 import uk.soton.service.mediation.Alignment;
+import uk.soton.service.mediation.JenaAlignment;
 import uk.soton.service.mediation.edoal.EDOALQueryGenerator;
 
 /**
@@ -105,32 +117,14 @@ public class SAP {
 			}catch (AlignmentException e1){
 				log.log(Level.SEVERE, "Cannot parse alignment file: " + edoalFile.getCanonicalPath(), e1);
 			} 
-						
+			
 			try {
 				this.m = new MediatorFactory().createMediator(ea);
 			} catch (NullPointerException e) {
 				log.log(Level.SEVERE, "Cannot create mediator from: " + ea.getExtension(Namespace.ALIGNMENT.uri, Annotations.ID), e);
 				e.printStackTrace();
 			}
-
-			// Add the CONSTRUCT queries
-			Alignment ja = m.getJenaAlignment();
-			this.m.addAllConstruct(constructQuery(ja));
 		}
-	}
-
-	/**
-	 * Create CONSTRUCT queries from alignment and add them to the mediator
-	 */
-
-	private List<Query> constructQuery(Alignment patterns) {
-		List<Query> constructs = EDOALQueryGenerator.generateQueriesFromAlignment(patterns);
-		System.out.println("CONSTRUCT queries from alignment\n");
-		for (Query q : constructs) {
-			System.out.println("<----------------------->");
-			System.out.println(q.toString());
-		}
-		return constructs;
 	}
 
 	/**

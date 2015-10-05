@@ -9,14 +9,18 @@
 <!-- JE2010: With the "#" in the end, this is parsed (by the RDF parser...) 
 	without it, this is not! -->
 <rdf:RDF xmlns="http://knowledgeweb.semanticweb.org/heterogeneity/alignment#"
-	xml:base="http://oms.omwg.org/ontoA-ontoB/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xml:base="http://oms.omwg.org/ontoA-ontoB/" 
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
 	xmlns:align="http://knowledgeweb.semanticweb.org/heterogeneity/alignment#"
-	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:ex="http://example.org" xmlns:ontoA="http://tutorial.topbraid.com/ontoA#"
-	xmlns:ontoB="http://tutorial.topbraid.com/ontoB#" xmlns:proton="http://proton.semanticweb.org/"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:ex="http://example.org" 
+	xmlns:ontoA="http://tutorial.topbraid.com/ontoA#"
+	xmlns:ontoB="http://tutorial.topbraid.com/ontoB#"
+	xmlns:proton="http://proton.semanticweb.org/"
 	xmlns:edoal="http://ns.inria.org/edoal/1.0/#">
-
+	
 	<Alignment rdf:about="http://oms.omwg.org/ontoA-ontoB/">
 		<xml>yes</xml>
 		<dc:creator>PaulBrandt</dc:creator>
@@ -27,8 +31,8 @@
 		<type>?*</type>
 		<onto1>
 			<Ontology rdf:about="&ontoA;">
-				<location>file:///ontoA.xml</location>
 				<formalism>
+<!-- 				<location>file:///ontoA.xml</location> -->
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
 				</formalism>
@@ -43,26 +47,18 @@
 				</formalism>
 			</Ontology>
 		</onto2>
-		<!-- Class basic Subsumption -->
-		<!-- Subsumtion of disjoint types, e.g., (ontoA;DeuxSubSet1 OR ontoA;DeuxSubSet2) 
-			subsetOf ontoB;TwoSubSet -->
+		<!-- Class basis -->
 		<map>
-			<Cell rdf:about="MappingRule_1">
+			<Cell rdf:about="MappingRule_0">
 				<entity1>
-					<edoal:Class>
-						<edoal:or rdf:parseType="Collection">
-							<edoal:Class rdf:about="&ontoA;DeuxSubSet1" />
-							<edoal:Class rdf:about="&ontoA;DeuxSubSet2" />
-						</edoal:or>
-					</edoal:Class>
+					<edoal:Class rdf:about="&ontoA;unEquivanox" />
 				</entity1>
 				<entity2>
-					<edoal:Class rdf:about="&ontoB;TwoSubSet" />
+					<edoal:Class rdf:about="&ontoB;OneEq" />
 				</entity2>
 				<measure rdf:datatype="&xsd;float">1.0</measure>
 				<relation>SubsumedBy</relation>
 			</Cell>
 		</map>
-
 	</Alignment>
 </rdf:RDF>

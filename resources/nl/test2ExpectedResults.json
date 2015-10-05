@@ -1,0 +1,7 @@
+{
+	"edoalIRI": "ontoA-ontoB"
+	"sourceOntIRI": "http://tutorial.topbraid.com/ontoA#"
+	"targetOntIRI": "http://tutorial.topbraid.com/ontoB#"
+	"totalPatterns": "2"
+	"alRelation": "<"
+}

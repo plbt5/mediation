@@ -110,18 +110,18 @@ public class EDOALMediator {
 		altto.getPatterns().replace(altto.getS(), altfrom.getS());
 		altto.getPatterns().replace(altto.getO(), altfrom.getO());
 		// PB: inserted code for more explicit logging on unknown or non-supported alignment relations
-//		if ( !( cell.getRelation().getRelation().equals("Equivalence") ||
-//			    cell.getRelation().getRelation().equals("<") || 
-//			    cell.getRelation().getRelation().equals("=")
-//			  ) ) {
-//			log.log(Level.WARNING, "Cannot generate rewriting rule for alignment relation " + cell.getRelation().getRelation().toString() + ". Aborting this cell");
+		if ( !( cell.getRelation().getRelation().equals("Equivalence") ||
+			    cell.getRelation().getRelation().equals("<") || 
+			    cell.getRelation().getRelation().equals("=")
+			  ) ) {
+			log.log(Level.WARNING, "Cannot generate rewriting rule for alignment relation " + cell.getRelation().getRelation().toString() + ". Aborting this cell");
 //			throw new AlignmentException("Illegal alignment relation: " + cell.getRelation().getRelation().toString());
-//		}
+		}
 		
 		// PB: reduced code since check on alignment relations isn't necessary here anymore
-		if (altfrom.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
-				|| cell.getRelation().getRelation().equals("<") || cell.getRelation().getRelation().equals("="))) {
-//		if (altfrom.getPatterns().size() == 1) {
+//		if (altfrom.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
+//				|| cell.getRelation().getRelation().equals("<") || cell.getRelation().getRelation().equals("="))) {
+		if (altfrom.getPatterns().size() == 1) {
 			forth.addRewritingRule(new RewritingRule() {
 				{
 					setLHS(altfrom.getPatterns().get(0).asTriple());
@@ -134,9 +134,11 @@ public class EDOALMediator {
 		}
 
 		// PB: reduced code since check on alignment relations isn't necessary here anymore
-		if (altto.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
-				|| cell.getRelation().getRelation().equals("<") || cell.getRelation().getRelation().equals("="))) {
-//		if (altto.getPatterns().size() == 1) {
+//		if (altto.getPatterns().size() == 1 && (
+//				cell.getRelation().getRelation().equals("Equivalence") || 
+//				cell.getRelation().getRelation().equals("<") || 
+//				cell.getRelation().getRelation().equals("="))) {
+		if (altto.getPatterns().size() == 1) {
 			back.addRewritingRule(new RewritingRule() {
 				{
 					setLHS(altto.getPatterns().get(0).asTriple());

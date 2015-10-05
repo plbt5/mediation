@@ -50,8 +50,8 @@ public class demo {
 
 				// get a String from the JSON object
 				alignFileName = (String) jsonObject.get("align");
-				dataAFileName = (String) jsonObject.get("dataA");
-				dataBFileName = (String) jsonObject.get("dataB");
+				dataAFileName = (String) jsonObject.get("dataTo");
+				dataBFileName = (String) jsonObject.get("dataFrom");
 
 				System.out.println("align: " + alignFileName);
 				System.out.println("dataA: " + dataAFileName);
@@ -77,6 +77,8 @@ public class demo {
 					} catch (IOException e) {
 						log.log(Level.SEVERE, "Cannot read from: " + dataAFileName);
 						e.printStackTrace();
+					} catch (NullPointerException e) {
+						log.log(Level.SEVERE, "DataTo file does not exist: " + dataAFileName);
 					}
 					System.out.println("----> Original query: [\n" + qryString + "\n]\n");
 					if (!sap.send(qryString)) {
