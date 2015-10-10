@@ -30,6 +30,7 @@ import org.semanticweb.owl.align.Cell;
 
 import uk.soton.service.mediation.Alignment;
 import uk.soton.service.mediation.JenaAlignment;
+import uk.soton.service.mediation.RDFVocabulary;
 import uk.soton.service.mediation.RewritingRule;
 import uk.soton.service.mediation.STripleList;
 
@@ -86,6 +87,8 @@ public class EDOALMediator {
 	 * Mediate method that translate an EDOAL alignment cell into an internal
 	 * alignment based on rewriting rules.
 	 *
+	 * TODO PB: Support mediation of complex correspondences as well
+	 * 
 	 * @param cell
 	 *            the EDOAL alignment cell
 	 * @param forth
@@ -98,7 +101,7 @@ public class EDOALMediator {
 		EDOALCell ecell = (EDOALCell) cell;
 		Object from = cell.getObject1();
 		Object to = cell.getObject2();
-		// Unravel every element of the source (from) and target (to) parts of
+		// Unravel entity elements of the source (from) and target (to) parts of
 		// the cell into an atomic RDF defined triple specification
 		final MediationResult altfrom, altto;
 		altfrom = mediateExpression((Expression) from);
@@ -109,14 +112,28 @@ public class EDOALMediator {
 
 		altto.getPatterns().replace(altto.getS(), altfrom.getS());
 		altto.getPatterns().replace(altto.getO(), altfrom.getO());
-		// PB: inserted code for more explicit logging on unknown or non-supported alignment relations
-		if ( !( cell.getRelation().getRelation().equals("Equivalence") ||
-			    cell.getRelation().getRelation().equals("<") || 
-			    cell.getRelation().getRelation().equals("=")
-			  ) ) {
+		// PB: inserted code to support more alignment relations
+		final String relIRITo, relIRIFrom;	// 
+		switch (cell.getRelation().getRelation()) {
+		case "=": // Equivalence
+			relIRITo = RDFVocabulary.EQ;
+			relIRIFrom = RDFVocabulary.EQ;
+			break;
+		case "<": // SubsumedBy
+			relIRITo = RDFVocabulary.LT;
+			relIRIFrom = RDFVocabulary.GT;
+			break;
+		case ">": // Subsumes
+			relIRITo = RDFVocabulary.GT;
+			relIRIFrom = RDFVocabulary.LT;
+			break;
+		default: // Unknown relation
+			relIRITo = null;
+			relIRIFrom = null;
 			log.log(Level.WARNING, "Cannot generate rewriting rule for alignment relation " + cell.getRelation().getRelation().toString() + ". Aborting this cell");
-//			throw new AlignmentException("Illegal alignment relation: " + cell.getRelation().getRelation().toString());
+			return;
 		}
+		// PB: End of inserted code
 		
 		// PB: reduced code since check on alignment relations isn't necessary here anymore
 //		if (altfrom.getPatterns().size() == 1 && (cell.getRelation().getRelation().equals("Equivalence")
@@ -127,6 +144,7 @@ public class EDOALMediator {
 					setLHS(altfrom.getPatterns().get(0).asTriple());
 					setRHS(altto.getPatterns().asTripleList());
 					setFD(altfrom.getFD());
+					setRR(relIRITo);	// PB: new code to set the alignment
 				}
 			});
 		} else {	// PB: added else part for more explicit logging on restrictions
@@ -144,6 +162,7 @@ public class EDOALMediator {
 					setLHS(altto.getPatterns().get(0).asTriple());
 					setRHS(altfrom.getPatterns().asTripleList());
 					setFD(altfrom.getFD());
+					setRR(relIRIFrom);	// PB: new code to set the alignment, as opposed to assume EQ only
 				}
 			});
 		} else {	// PB: added else part for more explicit logging on restrictions

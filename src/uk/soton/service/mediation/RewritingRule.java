@@ -46,6 +46,14 @@ public class RewritingRule {
 	 */
 	private List<FunctionalDependency> FD;
 
+// PB: new code
+	/**
+	 * PB: added field:
+	 * The field RR is the correspondence relation that this rule implements
+	 */
+	private String RR;
+// PB: End new code, see also getters and setters for this field
+	
 	/**
 	 * The setLHS method set the LHS field
 	 * @param lhs the Left Hand Side of the rule to set
@@ -97,6 +105,25 @@ public class RewritingRule {
     if (FD == null) return new ArrayList<FunctionalDependency>();
 		return FD;
 	}
+	
+// PB: new code
+	/**
+	 * The setRR method set the RR field
+	 * @param rr the rule's relation to set
+	 */
+	public RewritingRule setRR(String rr) {
+		RR = rr;
+		return this;
+	}
+
+	/**
+	 * Getter method for the rewriting rule's entity relation
+	 * @return the Rule's Relation
+	 */
+	public String getRR() {
+		return RR;
+	}
+// PB: End new code, see also the private RR field
 	
 	/*
 	 * (non-Javadoc)

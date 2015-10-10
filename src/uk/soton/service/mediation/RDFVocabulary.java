@@ -43,6 +43,9 @@ public abstract class RDFVocabulary {
   public static final String HAS_ENTITY_ALIGNMENT = "http://ecs.soton.ac.uk/om.owl#hasEntityAlignment";
   /** The Constant EQ. */
   public static final String EQ = "http://ecs.soton.ac.uk/om.owl#EQ";
+  /** PB added: The Constant LT, representing SubsumedBy as entity relation. */
+  public static final String LT = "http://ecs.soton.ac.uk/om.owl#LT";
+  public static final String GT = "http://ecs.soton.ac.uk/om.owl#GT";
   /** The Constant LHS. */
   public static final String LHS = "http://ecs.soton.ac.uk/om.owl#lhs";
   /** The Constant ENTITY_ALIGNMENT. */

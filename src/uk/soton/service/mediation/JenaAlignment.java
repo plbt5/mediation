@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.semanticweb.owl.align.AlignmentException;
+
 import uk.soton.service.mediation.algebra.Function;
 import uk.soton.service.mediation.algebra.FunctionWrapper;
 import uk.soton.service.mediation.algebra.operation.*;
@@ -441,6 +443,11 @@ public class JenaAlignment implements Alignment {
 				this.getP(RDFVocabulary.HAS_ENTITY_ALIGNMENT), ea);
 	}
 
+	/**
+	 * PB: Modified the code to differentiate between the Equivalence relation and the Subsumption relation
+	 * in the rewriting rule.
+	 */
+	
 	@Override
 	public void addRewritingRule(RewritingRule rule) {
 		Resource lhsa = this.getA();
@@ -462,19 +469,20 @@ public class JenaAlignment implements Alignment {
 				if (p.isBlank())
 					params.add(this.getA(p.getBlankNodeId()));
 				if (p.isLiteral()) {
-					// Node n =
-					// Node.createLiteral(p.getLiteralValue().toString(),
-					// p.getLiteralLanguage(), p.getLiteralDatatype());
 					RDFNode n = this.inner.createTypedLiteral(p.getLiteralValue().toString(), p.getLiteralDatatype());
 					params.add(n);
 				}
-
 			}
 			this.inner.getGraph().getReifier().reifyAs(fdr.asNode(),
 					new Triple(fd.getVar(), this.getP(fd.getFuncURI()).asNode(), params.asNode()));
 			this.inner.add(ea, this.getP(RDFVocabulary.HAS_FUNCTIONAL_DEPENDENCY), fdr);
 		}
-		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION), this.getR(RDFVocabulary.EQ));
+
+		// PB: New code to differentiate between "RDFVocabulary.EQ" and "RDFVocabulary.LT"
+		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION), this.getR(rule.getRR()));
+		// PB: Old code could only add the "RDFVocabulary.EQ" as entity relation
+//		this.inner.add(ea, this.getP(RDFVocabulary.HAS_RELATION), this.getR(RDFVocabulary.EQ));
+		
 		this.inner.add(this.root, this.getP(RDFVocabulary.HAS_ENTITY_ALIGNMENT), ea);
 	}
 

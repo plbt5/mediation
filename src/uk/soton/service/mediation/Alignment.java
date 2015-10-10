@@ -39,13 +39,17 @@ public interface Alignment {
 	 * 
 	 */
 	public enum Relation {
+		// PB: Existing code:
 		EQ,		// EQuivalence relation ("=")
+		// PB: End existing code.
+		// PB: New code
 		NEQ,	// Non equivalence relation ("%")
 		LT,		// Subsumed by ("<")
 		GT,		// Subsumes (">")
 		NTI,	// Non-transitive implication ("~>") :: this one is as of yet only defined in the Alignment API source code (fr.inrialpes.exmo.align.impl.rel)
 		IO,		// Instance of ("InstanceOf")
 		HI		// Has instance ("HasInstance")
+		// PB: End new code
 		};
 	
 	/**
@@ -68,7 +72,7 @@ public interface Alignment {
 	 *
 	 * @param rule the rewriting rule
 	 */
-	 public void addRewritingRule(RewritingRule rule);
+	public void addRewritingRule(RewritingRule rule);
   
 	
 	/**
