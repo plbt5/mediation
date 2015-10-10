@@ -18,6 +18,9 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
+import fr.inrialpes.exmo.align.impl.Annotations;
+import fr.inrialpes.exmo.align.impl.Namespace;
+
 /**
  * @author brandtp
  *
@@ -30,7 +33,7 @@ public class demo {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String configFile = "./resources/nl/test1.json";
+		String configFile = "./resources/nl/test2.json";
 		String alignFileName;
 		String dataAFileName;
 		String dataBFileName;
@@ -67,10 +70,12 @@ public class demo {
 					} catch (UnsupportedOperationException e) {
 						log.log(Level.SEVERE, "Cannot add EDOAL alignment: " + alignFile);
 					}
+					// Show the results
 					sap.showMediation();
 
 					// Simulate a SAP call to send message
-
+					// 		First get the message (in own language) to send
+					
 					String qryString = null;
 					try {
 						qryString = Utilities.readFile(dataAFileName, StandardCharsets.UTF_8);
@@ -80,11 +85,27 @@ public class demo {
 					} catch (NullPointerException e) {
 						log.log(Level.SEVERE, "DataTo file does not exist: " + dataAFileName);
 					}
+					
+					// 		Also, initialise the peer communicator
+					
+					if (!sap.getMediator().getPH().initPeer(qryString,sap.getMediator().getOnto2()) ) {
+						log.log(Level.SEVERE, "Cannot read onto2");
+					};
+					
+					// 		Secondly, send the message
 					System.out.println("----> Original query: [\n" + qryString + "\n]\n");
-					if (!sap.send(qryString)) {
+					if (!sap.sendQ(qryString)) {
 						log.log(Level.SEVERE, "Cannot send query: " + qryString);
+					} else {
+						//	Thirdly, await the response
+						String queryResult = sap.receiveA();
+						if (queryResult == null) {
+							log.log(Level.SEVERE, "Cannot receive answer to query.");
+						}
 					}
-
+					
+					// Simulate the receipt of a message
+					
 					File dataBFile = new File(dataBFileName);
 					if (dataBFile.exists() && !dataBFile.isDirectory()) {
 						// Simulate the SAP call from the other app to receive its
@@ -99,9 +120,9 @@ public class demo {
 							log.log(Level.SEVERE, "Cannot read from: " + dataBFileName);
 							e.printStackTrace();
 						}
-						sap.getP().setMessageR(qryString);
+						
 						// Secondly, as an application, get the received message
-						Query rcvdQry = sap.receive();
+						Query rcvdQry = sap.receiveQ();
 						if (rcvdQry != null) {
 							System.out.println("----> Received native query: [\n" + rcvdQry + "\n]\n");
 						} else {
