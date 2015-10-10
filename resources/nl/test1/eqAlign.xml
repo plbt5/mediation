@@ -32,7 +32,7 @@
 		<onto1>
 			<Ontology rdf:about="&ontoA;">
 				<formalism>
-<!-- 				<location>file:///ontoA.xml</location> -->
+<!-- 				<location>ontoA.xml</location> -->
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
 				</formalism>
@@ -40,7 +40,7 @@
 		</onto1>
 		<onto2>
 			<Ontology rdf:about="&ontoB;">
-				<location>file:///ontoB.xml</location>
+				<location>resources/nl/test1/ontoB.xml</location>
 				<formalism>
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
@@ -70,54 +70,6 @@
 				</entity2>
 				<measure rdf:datatype="&xsd;float">1.0</measure>
 				<relation>=</relation>
-			</Cell>
-		</map>
-		<map>
-			<Cell rdf:about="MappingRule_2">
-				<entity1>
-					<edoal:Class rdf:about="&ontoA;unEquivanox" />
-				</entity1>
-				<entity2>
-					<edoal:Class rdf:about="&ontoB;OneEq" />
-				</entity2>
-				<measure rdf:datatype="&xsd;float">1.0</measure>
-				<relation>></relation>
-			</Cell>
-		</map>
-		<map>
-			<Cell rdf:about="MappingRule_3">
-				<entity1>
-					<edoal:Class rdf:about="&ontoA;unEquivanox" />
-				</entity1>
-				<entity2>
-					<edoal:Class rdf:about="&ontoB;OneEq" />
-				</entity2>
-				<measure rdf:datatype="&xsd;float">1.0</measure>
-				<relation>>=</relation>
-			</Cell>
-		</map>
-		<map>
-			<Cell rdf:about="MappingRule_4">
-				<entity1>
-					<edoal:Class rdf:about="&ontoA;unEquivanox" />
-				</entity1>
-				<entity2>
-					<edoal:Class rdf:about="&ontoB;OneEq" />
-				</entity2>
-				<measure rdf:datatype="&xsd;float">1.0</measure>
-				<relation>&lt;</relation>
-			</Cell>
-		</map>
-		<map>
-			<Cell rdf:about="MappingRule_5">
-				<entity1>
-					<edoal:Class rdf:about="&ontoA;unEquivanox" />
-				</entity1>
-				<entity2>
-					<edoal:Class rdf:about="&ontoB;OneEq" />
-				</entity2>
-				<measure rdf:datatype="&xsd;float">1.0</measure>
-				<relation>&lt;=</relation>
 			</Cell>
 		</map>
 	</Alignment>

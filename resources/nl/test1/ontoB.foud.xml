@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY ontoB "http://tutorial.topbraid.com/ontoB#">
+<!ENTITY proton "http://proton.semanticweb.org/">
+]>
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://tutorial.topbraid.com/ontoB#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://tutorial.topbraid.com/ontoB" > 
+  <rdf:Description rdf:about="#Inst_1-DeuxSubSet">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inst_1-DeuxSubSet</rdfs:label>
+    <rdf:type rdf:resource="#DeuxSubSet"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le premier instance du class DeuxSubSet</rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created with TopBraid Composer</owl:versionInfo>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#DeuxSubSet">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Encloses ontoA:TwoSubSet1 and -2</rdfs:comment>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="#UnEq">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">equal to ontoA:OneEq</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UnEq</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="#Inst_1-UnEq">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inst_1-UnEq</rdfs:label>
+    <rdf:type rdf:resource="#UnEq"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le premier instance du class UnEq</rdfs:comment>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid -->

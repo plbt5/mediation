@@ -1,5 +1,6 @@
 SELECT ?v WHERE 
 	{
-         ?v <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tutorial.topbraid.com/ontoA#unEquivanox> .
+         ?v <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tutorial.topbraid.com/ontoA#DeuxSubSet2> ;
+         	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tutorial.topbraid.com/ontoA#DeuxSubSet1> .
     } 
 LIMIT 10

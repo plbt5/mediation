@@ -12,32 +12,41 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xml:base="http://tutorial.topbraid.com/ontoB" > 
-  <rdf:Description rdf:about="#Inst_1-DeuxSubSet">
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inst_1-DeuxSubSet</rdfs:label>
-    <rdf:type rdf:resource="#DeuxSubSet"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le premier instance du class DeuxSubSet</rdfs:comment>
-  </rdf:Description>
-  <rdf:Description rdf:about="">
-    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created with TopBraid Composer</owl:versionInfo>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="#DeuxSubSet">
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet</rdfs:label>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Encloses ontoA:TwoSubSet1 and -2</rdfs:comment>
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="#UnEq">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">equal to ontoA:OneEq</rdfs:comment>
-    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UnEq</rdfs:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="#Inst_1-UnEq">
-    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Inst_1-UnEq</rdfs:label>
-    <rdf:type rdf:resource="#UnEq"/>
-    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le premier instance du class UnEq</rdfs:comment>
-  </rdf:Description>
-</rdf:RDF>
+  	<owl:Ontology rdf:about="">
+		<owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The data store of application B, in english</owl:versionInfo>
+	</owl:Ontology>
+	
+	<owl:Class rdf:ID="TwoSubSet">
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">superset
+			of ontoA:DeuxSubSet1</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">TwoSubSet</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+	</owl:Class>
 
+	<owl:Class rdf:ID="OneEq">
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">equal
+			to ontoA:unEquivanox</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">oneEq</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+	</owl:Class>
+	
+	<OneEq rdf:ID="Inst_1-OneEq">
+		<rdfs:label>Inst_1-OneEq</rdfs:label>
+		<rdfs:comment>An instance of the class One</rdfs:comment>
+	</OneEq>
+	<OneEq rdf:ID="Inst_2-OneEq">
+		<rdfs:label>Inst_2-OneEq</rdfs:label>
+		<rdfs:comment>A second instance of the class One</rdfs:comment>
+	</OneEq>
+	
+	<TwoSubSet rdf:ID="Inst_1-TwoSubSet">
+		<rdfs:label>Inst_1-TwoSubSet2</rdfs:label>
+		<rdfs:comment>The first instance of the class TwoSubSet</rdfs:comment>
+	</TwoSubSet>
+	<TwoSubSet rdf:ID="Inst_2-TwoSubSet">
+		<rdfs:label>Inst_1-TwoSubSet1</rdfs:label>
+		<rdfs:comment>The second instance of the class TwoSubSet</rdfs:comment>
+	</TwoSubSet>
+</rdf:RDF>
+  
 <!-- Created with TopBraid -->

@@ -40,7 +40,7 @@
 		</onto1>
 		<onto2>
 			<Ontology rdf:about="&ontoB;">
-				<location>file:///ontoB.xml</location>
+				<location>resources/nl/test1/ontoB.xml</location>
 				<formalism>
 					<Formalism align:uri="http://www.w3.org/2002/07/owl#"
 						align:name="OWL1.0" />
@@ -51,13 +51,25 @@
 		<map>
 			<Cell rdf:about="MappingRule_0">
 				<entity1>
-					<edoal:Class rdf:about="&ontoA;unEquivanox" />
+					<edoal:Class rdf:about="&ontoA;DeuxSubSet1" />
 				</entity1>
 				<entity2>
-					<edoal:Class rdf:about="&ontoB;OneEq" />
+					<edoal:Class rdf:about="&ontoB;TwoSubSet" />
 				</entity2>
 				<measure rdf:datatype="&xsd;float">1.0</measure>
 				<relation>SubsumedBy</relation>
+			</Cell>
+		</map>
+		<map>
+			<Cell rdf:about="MappingRule_1">
+				<entity1>
+					<edoal:Class rdf:about="&ontoA;DeuxSubSet2" />
+				</entity1>
+				<entity2>
+					<edoal:Class rdf:about="&ontoB;TwoSubSet" />
+				</entity2>
+				<measure rdf:datatype="&xsd;float">1.0</measure>
+				<relation>&lt;</relation>
 			</Cell>
 		</map>
 	</Alignment>

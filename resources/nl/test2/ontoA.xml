@@ -9,12 +9,11 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xml:base="http://tutorial.topbraid.com/ontoA">
 	<owl:Ontology rdf:about="">
-		<owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created with TopBraid
-			Composer</owl:versionInfo>
+		<owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le base de données pour application A, en francais</owl:versionInfo>
 	</owl:Ontology>
 	<owl:Class rdf:ID="DeuxSubSet1">
-		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">subset
-			of ontoB:TwoSubSet</rdfs:comment>
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le subset partiel
+			d'ontoB:TwoSubSet</rdfs:comment>
 		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet1</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 		<owl:disjointWith>
@@ -23,34 +22,33 @@
 	</owl:Class>
 	<owl:Class rdf:about="DeuxSubSet2">
 		<owl:disjointWith rdf:resource="DeuxSubSet2" />
-		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">subset
- of ontoB:TwoSubSet</rdfs:comment>
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Un subset partiel
+ d'ontoB:TwoSubSet</rdfs:comment>
 		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet2</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
 	<owl:Class rdf:ID="unEquivanox">
-		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">equal
-			to ontoB:OneEq</rdfs:comment>
-		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">oneEq</rdfs:label>
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Representé Equivalence
+ avec son frère ontoB:OneEq</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">unEquivanox</rdfs:label>
 		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
 	</owl:Class>
 	<unEquivanox rdf:ID="Inst_1-unEquivanox">
 		<rdfs:label>Inst_1-unEquivanox</rdfs:label>
-		<rdfs:comment>An instance of the class One, representing Equivalence
- to its peer from ontoB</rdfs:comment>
+		<rdfs:comment>Le premier instance d'ontoA class unEquivanox</rdfs:comment>
 	</unEquivanox>
 	<unEquivanox rdf:ID="Inst_2-unEquivanox">
 		<rdfs:label>Inst_2-unEquivanox</rdfs:label>
-		<rdfs:comment>An instance of the class One</rdfs:comment>
+		<rdfs:comment>Le deuxiem instance d'ontoA class unEquivanox</rdfs:comment>
 	</unEquivanox>
-	<TwoSubSet2 rdf:ID="Inst_1-TwoSubSet2">
-		<rdfs:label>Inst_1-TwoSubSet2</rdfs:label>
-		<rdfs:comment>The first instance of the class TwoSubSet2</rdfs:comment>
-	</TwoSubSet2>
-	<TwoSubSet1 rdf:ID="Inst_1-TwoSubSet1">
-		<rdfs:label>Inst_1-TwoSubSet1</rdfs:label>
-		<rdfs:comment>The first instance of the class TwoSubSet1</rdfs:comment>
-	</TwoSubSet1>
+	<DeuxSubSet2 rdf:ID="Inst_1-DeuxSubSet2">
+		<rdfs:label>Inst_1-DeuxSubSet2</rdfs:label>
+		<rdfs:comment>Le premier instance du class DeuxSubSet2</rdfs:comment>
+	</DeuxSubSet2>
+	<DeuxSubSet1 rdf:ID="Inst_1-DeuxSubSet1">
+		<rdfs:label>Inst_1-DeuxSubSet1</rdfs:label>
+		<rdfs:comment>Le premier instance du class DeuxSubSet1</rdfs:comment>
+	</DeuxSubSet1>
 </rdf:RDF>
 
 <!-- Created with TopBraid -->
