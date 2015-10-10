@@ -1,0 +1,152 @@
+\documentclass[a4paper,11pt,article,oneside]{memoir}
+\usepackage{ecis2015}
+\usepackage{longtable}
+%%\usepackage{pdflscape} 			%% For use of \begin{landscape}
+\usepackage{graphicx}
+\usepackage{amssymb, amsmath, setspace, rotating, titlesec, multirow, adjustbox, array, booktabs, threeparttable}
+\usepackage{pifont}
+\usepackage{siunitx}
+\usepackage[normalem]{ulem}			% tbv strikout text: \sout{deze tekst eruit}
+\usepackage{xcolor}
+\usepackage{MnSymbol}
+\usepackage[xindy,toc]{glossaries}	%%%% The glossaries environment. Refer to: http://en.wikibooks.org/wiki/LaTeX/Glossary
+%%%\usepackage{pst-plot}				%%%% The ps trick environment. Zie ook: http://tug.org/PSTricks/main.cgi?file=examples REQUIRES --latex-engine=xelatex
+
+
+\usepackage{datetime}    			 % sourced from; http://ftp.snt.utwente.nl/pub/software/tex/macros/latex/contrib/datetime/
+
+%%% About this LaTeX template: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This template should work with any (reasonably recent) full
+% installation of TeXLive or MikTeX. The "ecis2015" package loads a
+% number of other packages, so if some package is missing, please
+% install it using the package manager of your TeX distribution. In
+% particular, if the "tikz" package is missing, you may have to install
+% "pgf" or simply remove our example graphics (see figure example
+% below).
+%
+% The file "ecis2015.sty" should be placed somewhere in your TeX Path
+% (or simply in the same folder as your document).
+%
+% Please use PDFLaTeX to compile your document.
+%
+% You need not escape special characters or Umlauts like é ä ö ü ß (in 
+% fact, you shouldn't), as this source is inputenc'd in UTF-8.
+%
+% Note for BibTeX users: We use BibLaTeX for formatting, so we use Biber
+% as a sorting backend (default). 
+% If you still need to use the old BibTeX program, please change the 
+% BibLaTeX backend in the package file ("ecis2015.sty").
+%
+%%% Enter Document Info here: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ------- mijn configs: ---------
+%
+
+%\newcommand*\rot{\rotatebox{60}}
+\newcommand*\OK{\ding{51}}
+
+
+\newcolumntype{R}[2]{%
+ >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+ l%
+ <{\egroup}%
+}
+\newcommand*\rot{\multicolumn{1}{R{60}{1em}}}% no optional argument here, please!
+
+
+%%%datetime package config %%%
+\renewcommand{\dateseparator}{-}
+%\renewcommand{\timeseparator}{}
+\settimeformat{hhmmsstime}  
+
+\maintitle{$title$} % ← Don't use UPPERCASE here, we do that automatically.
+\subtitle{$subtitle$}
+\shorttitle{$shorttitle$} % ← This goes into the header.
+\category{$category$} % 
+\versionmgt{version: $version$}
+\date{\today}
+
+% The review process is double blind.
+% Therefore papers submitted for review MUST NOT contain any author 
+% information – neither on the title page nor in the page header! 
+% This information will be added only once the submission is ACCEPTED.
+
+\authors{% Separate authors by a "\par" or blank line.
+$for(author)$
+$if(author.name)$
+$author.name$,\\
+$if(author.affiliation)$$author.affiliation$, $endif$
+$if(author.email)$ $author.email$ \\$endif$
+$else$
+$author$$if(affiliation)$, $affiliation$, $endif$\\
+$endif$
+\par
+$endfor$
+}
+\shortauthors{Paul Brandt -- $category$} % ← This goes into the header. 
+
+%%% BibTeX: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\addbibresource{$bibliography$} % ← Your .bib file, if you're using BibTeX
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Glossaries: %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeglossaries
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%\pagebreak
+
+% --- Abstract --- --- --- --- ---
+\begin{abstract}
+$abstract$
+\end{abstract}
+%
+
+% --- Keywords --- --- --- --- ---
+$if(kw)$		% use option -M kw	
+\begin{keywords}
+$tags$
+\end{keywords}
+$endif$
+
+
+%\pagebreak
+% --- table of contents --- --- --- --- ---
+%
+% add table of contents to pdf bookmarks
+$if(toc)$		% use option --toc
+\tableofcontents
+\pagebreak
+\printglossaries
+$endif$
+
+\pagebreak
+
+% --- main matter --- --- --- --- ---
+
+$body$
+
+%\chapter*{References}
+
+% If you want to enter your bibliography by hand, use our "references" 
+% environment:
+
+
+%\begin{references}
+%
+%	Avison, D. E. and G. Fitzgerald (1995). \textit{Information Systems Development. Methodologies, Techniques and Tools.} 2nd Edition. London: McGraw-Hill.
+%	
+%\end{references}
+
+
+% If you are using BibTeX/Biber:
+
+%\printbibliography
+
+%ACKNOWLEDGMENTS are optional
+%\chapter*{Acknowledgments}
+% % $ack$
+\end{document}
