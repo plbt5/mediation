@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+<!ENTITY ontoA "http://tutorial.topbraid.com/ontoA#">
+<!ENTITY proton "http://proton.semanticweb.org/">
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns="http://tutorial.topbraid.com/ontoA#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xml:base="http://tutorial.topbraid.com/ontoA">
+	<owl:Ontology rdf:about="">
+		<owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le base de données pour application A, en francais</owl:versionInfo>
+	</owl:Ontology>
+	<owl:Class rdf:ID="DeuxSubSet1">
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Le subset partiel
+			d'ontoB:TwoSubSet</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet1</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+		<owl:disjointWith>
+			<owl:Class rdf:ID="DeuxSubSet2" />
+		</owl:disjointWith>
+	</owl:Class>
+	<owl:Class rdf:about="DeuxSubSet2">
+		<owl:disjointWith rdf:resource="DeuxSubSet2" />
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Un subset partiel
+ d'ontoB:TwoSubSet</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DeuxSubSet2</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+	</owl:Class>
+	<owl:Class rdf:ID="unEquivanoxDemiAnd">
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Representé Equivalence
+ avec son frère ontoB:TwoAnd</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">unEquivanoxDemiAnd</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+	</owl:Class>
+	<owl:Class rdf:ID="deuxEquivanoxDemiAnd">
+		<rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Representé Equivalence
+ avec son frère ontoB:TwoAnd</rdfs:comment>
+		<rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">deuxEquivanoxDemiAnd</rdfs:label>
+		<rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+	</owl:Class>
+	
+	<!--  Les instances -->
+	
+	<unEquivanox rdf:ID="Inst_1-deuxEquivanoxDemiAnd">
+		<rdfs:label>Inst_1-deuxEquivanoxDemiAnd</rdfs:label>
+		<rdfs:comment>Le premier instance d'ontoA class deuxEquivanoxDemiAnd</rdfs:comment>
+	</unEquivanox>
+	<unEquivanox rdf:ID="Inst_2-deuxEquivanoxDemiAnd">
+		<rdfs:label>Inst_2-deuxEquivanoxDemiAnd</rdfs:label>
+		<rdfs:comment>Le deuxiem instance d'ontoA class deuxEquivanoxDemiAnd</rdfs:comment>
+	</unEquivanox>
+
+	<unEquivanox rdf:ID="Inst_1-unEquivanoxDemiAnd">
+		<rdfs:label>Inst_1-unEquivanoxDemiAnd</rdfs:label>
+		<rdfs:comment>Le premier instance d'ontoA class unEquivanoxDemiAnd</rdfs:comment>
+	</unEquivanox>
+	<unEquivanox rdf:ID="Inst_2-unEquivanoxDemiAnd">
+		<rdfs:label>Inst_2-unEquivanoxDemiAnd</rdfs:label>
+		<rdfs:comment>Le deuxiem instance d'ontoA class unEquivanoxDemiAnd</rdfs:comment>
+	</unEquivanox>
+	
+	<DeuxSubSet2 rdf:ID="Inst_1-DeuxSubSet2">
+		<rdfs:label>Inst_1-DeuxSubSet2</rdfs:label>
+		<rdfs:comment>Le premier instance du class DeuxSubSet2</rdfs:comment>
+	</DeuxSubSet2>
+	<DeuxSubSet1 rdf:ID="Inst_1-DeuxSubSet1">
+		<rdfs:label>Inst_1-DeuxSubSet1</rdfs:label>
+		<rdfs:comment>Le premier instance du class DeuxSubSet1</rdfs:comment>
+	</DeuxSubSet1>
+</rdf:RDF>
+
+<!-- Created with TopBraid -->
