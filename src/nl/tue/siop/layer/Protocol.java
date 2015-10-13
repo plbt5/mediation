@@ -4,6 +4,7 @@
 package nl.tue.siop.layer;
 
 import java.io.InputStream;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -171,7 +172,9 @@ public class Protocol {
 			model.read(in, "RDF/XML");
 
 			// write it to standard out
-			model.write(System.out);
+//			System.out.println("\n=========> Peer's ontology in TTL:");
+//			model.write(System.out, "TURTLE");
+//			System.out.println("=========\n");
 
 			return model;
 		}

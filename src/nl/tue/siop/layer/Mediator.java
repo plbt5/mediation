@@ -190,15 +190,15 @@ public class Mediator {
 		// Assume SPARQL
 		try {
 			Op op = Algebra.compile(lhe);
-			System.out.println("LHS as ARQ Algebra:");
-			System.out.println(op.toString());
+//			System.out.println("LHS as ARQ Algebra:");
+//			System.out.println(op.toString());
 
 			EntityTranslationService ets = new EntityTranslationServiceImpl();
 			Transform translation = new EntityTranslation(ets, this.jenaAlignment);
 
 			Op translated = Transformer.transform(translation, op);
-			System.out.println("Translated LHS as ARQ Algebra:");
-			System.out.println(translated.toString());
+//			System.out.println("Translated LHS as ARQ Algebra:");
+//			System.out.println(translated.toString());
 
 			rhe = ExtendedOpAsQuery.asQuery(translated);
 		} catch (Exception e) {
@@ -260,6 +260,8 @@ public class Mediator {
 	 * @return RHE - the mediated list of triples as result of the translation
 	 */
 	public STripleList translate(STripleList triples) {
+		log.log(Level.INFO, "Answer triples:" + triples.toString());
+
 		BGPTranslationResult translatedTriples = null;
 		STripleList results = new STripleList();
 		try {
